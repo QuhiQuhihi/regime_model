@@ -1,8 +1,9 @@
-/test_data
 /.idea
 /.vscode
 /.venv_quant
 /__pycache__
-utils/__pycache__/
-/note/.ipynb_checkpoints/
+__pycache__/
 /.ipynb_checkpoints/
+.ipynb_checkpoints/
+.idea/
+.vscode/
