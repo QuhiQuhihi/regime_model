@@ -2,6 +2,8 @@
 ## Detecting Regime of markets
 Backtesting quantitative idea has significant drawbacks. If we test idea in single regime such as late 2020 to early 2022, the idea won't work in other regime such as late 2022.
 
+![SPY_2022-09-30_09-02-34](https://user-images.githubusercontent.com/97104215/193163810-821fa86b-f3cb-4f94-8035-db3583e6b845.png)
+
 However, it is really difficult to get label data from financial market. Eventhough S&P500 index reached below 4000, it is really difficult to say that it is recession. Of course some might argue that it is recession, but other might say that it is not recession.
 
 In addition, labelling market data daily or hourly is demading job. Single mistake might lead to huge loss at investment. Group of finance experts might be able to label market data. But this idea is unrealistic.
