@@ -1,0 +1,49 @@
+{
+  "start": "2018-07-01",
+  "end": "2026-09-18",
+  "inspected": "2026-09-19",
+  "origin": "Explicit user-authorized Yahoo Finance refresh; initial manifest and snapshots retained.",
+  "snapshots": [
+    {
+      "ticker": "SPY",
+      "source": "Yahoo Finance via yfinance",
+      "source_url": "https://finance.yahoo.com/quote/SPY/history/",
+      "field": "Adj Close",
+      "auto_adjust": false,
+      "interval": "1d",
+      "start_inclusive": "2018-07-01",
+      "end_exclusive": "2026-09-18",
+      "retrieved_at_utc": "2026-09-18T16:27:00.177190+00:00",
+      "yfinance_version": "1.7.0",
+      "sha256": "858ccd3b514dec2e38266cb568a5907f3004c20abcee8cb48bea86f52dcfa70b",
+      "rows": 2064,
+      "first_date": "2018-07-02",
+      "last_date": "2026-09-17",
+      "caveat": "Current vintage, split/dividend-adjusted proxy; not point-in-time data.",
+      "filename": "SPY_2018-07-01_2026-09-18.csv",
+      "units": "USD adjusted close; simple returns calculated as P_t/P_(t-1)-1",
+      "restrictions": "Yahoo/provider terms; raw data excluded from version control; no redistribution permission asserted"
+    },
+    {
+      "ticker": "TLT",
+      "source": "Yahoo Finance via yfinance",
+      "source_url": "https://finance.yahoo.com/quote/TLT/history/",
+      "field": "Adj Close",
+      "auto_adjust": false,
+      "interval": "1d",
+      "start_inclusive": "2018-07-01",
+      "end_exclusive": "2026-09-18",
+      "retrieved_at_utc": "2026-09-18T16:27:01.231189+00:00",
+      "yfinance_version": "1.7.0",
+      "sha256": "a5daa16a3294a532fa8214c308999cb75a51b8d4734919e3003a49c56a88d2d5",
+      "rows": 2064,
+      "first_date": "2018-07-02",
+      "last_date": "2026-09-17",
+      "caveat": "Current vintage, split/dividend-adjusted proxy; not point-in-time data.",
+      "filename": "TLT_2018-07-01_2026-09-18.csv",
+      "units": "USD adjusted close; simple returns calculated as P_t/P_(t-1)-1",
+      "restrictions": "Yahoo/provider terms; raw data excluded from version control; no redistribution permission asserted"
+    }
+  ],
+  "refresh_utc": "2026-09-18T16:27:02.763187+00:00"
+}

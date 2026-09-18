@@ -1,0 +1,3 @@
+# Next experiment — explicitly not run
+
+The executed primary HMM/EWMA loss interval includes zero and the HMM point estimate is worse. Next, preregister a low-dimensional volatility-only state model against EWMA on genuinely new observations, with no state-count search on the test period. Preserve this negative result. Required inputs: a permitted point-in-time source snapshot, predeclared risk proxy and economic loss threshold, actual cash yields and executable timing. Separately compare online alarm delays against multiple synthetic change types rather than one large variance jump. Neither experiment has been run.

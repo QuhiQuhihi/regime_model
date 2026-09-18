@@ -1,0 +1,15 @@
+name: research checks
+on: [push, pull_request]
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.13"
+      - run: uv sync --locked
+      - run: uv run python -m pytest -q
+      - run: uv run python -m ruff check research tests
+      - run: uv run python -m ruff format --check research tests
+      - run: uv run python research/check_artifacts.py --public

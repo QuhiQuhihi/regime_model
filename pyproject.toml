@@ -1,0 +1,37 @@
+[project]
+name = "regime-model-research"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "numpy>=2.2,<3",
+  "pandas>=2.2,<3",
+  "scipy>=1.15,<2",
+  "matplotlib>=3.10,<4",
+  "scikit-learn>=1.6,<2",
+  "nbformat>=5.10,<6",
+  "nbclient>=0.10,<1",
+  "nbconvert>=7.16,<8",
+  "ipykernel>=6.29,<8",
+  "yfinance>=1.0,<2",
+  "exchange-calendars>=4.11,<5",
+  "hmmlearn>=0.3.3,<0.4"
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["research/private-legacy"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+"research/run_study.py" = ["E402"]
+"research/check_artifacts.py" = ["E402"]

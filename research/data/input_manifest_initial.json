@@ -1,0 +1,48 @@
+{
+  "start": "2018-07-01",
+  "end": "2026-09-01",
+  "inspected": "2026-09-19",
+  "origin": "Existing SVD project per-ticker snapshots, copied byte-for-byte with source metadata. Retrieval timestamp is not historical availability.",
+  "snapshots": [
+    {
+      "ticker": "SPY",
+      "source": "Yahoo Finance via yfinance",
+      "source_url": "https://finance.yahoo.com/quote/SPY/history/",
+      "field": "Adj Close",
+      "auto_adjust": false,
+      "interval": "1d",
+      "start_inclusive": "2018-07-01",
+      "end_exclusive": "2026-09-01",
+      "retrieved_at_utc": "2026-09-17T14:55:29.523781+00:00",
+      "yfinance_version": "1.7.0",
+      "sha256": "cea566d8c3a0f890d94ae476ae719755c6d9bf8dd784e7b565d8724b968a73ff",
+      "rows": 2052,
+      "first_date": "2018-07-02",
+      "last_date": "2026-08-31",
+      "caveat": "Current vintage, split/dividend-adjusted proxy; not point-in-time data.",
+      "filename": "SPY_2018-07-01_2026-09-01.csv",
+      "units": "USD adjusted close; simple returns calculated as P_t/P_(t-1)-1",
+      "restrictions": "Yahoo/provider terms; raw data excluded from version control; no redistribution permission asserted"
+    },
+    {
+      "ticker": "TLT",
+      "source": "Yahoo Finance via yfinance",
+      "source_url": "https://finance.yahoo.com/quote/TLT/history/",
+      "field": "Adj Close",
+      "auto_adjust": false,
+      "interval": "1d",
+      "start_inclusive": "2018-07-01",
+      "end_exclusive": "2026-09-01",
+      "retrieved_at_utc": "2026-09-17T14:55:39.770391+00:00",
+      "yfinance_version": "1.7.0",
+      "sha256": "6beb44eeb8693568a2c37ea2fd940639731e9112286d5e3ba0cc8ab68410087d",
+      "rows": 2052,
+      "first_date": "2018-07-02",
+      "last_date": "2026-08-31",
+      "caveat": "Current vintage, split/dividend-adjusted proxy; not point-in-time data.",
+      "filename": "TLT_2018-07-01_2026-09-01.csv",
+      "units": "USD adjusted close; simple returns calculated as P_t/P_(t-1)-1",
+      "restrictions": "Yahoo/provider terms; raw data excluded from version control; no redistribution permission asserted"
+    }
+  ]
+}

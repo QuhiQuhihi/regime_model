@@ -1,0 +1,267 @@
+[
+  {
+    "path": "00_Gausian_Mixture_Model(GMM).ipynb",
+    "sha256": "dfea1d662b77c4215ae0b796d7de64626da0ece11ea91539b31ea37e0c2e4cf0",
+    "disposition": "Superseded notebook: original on old; saved results withdrawn from maintained evidence."
+  },
+  {
+    "path": "01_Greedy_Gausian_Segmentation(GSS).ipynb",
+    "sha256": "1bee18c1d00c17a14330e0027888f9d46416a0df4e8ffec6851807d315dff233",
+    "disposition": "Superseded notebook: original on old; saved results withdrawn from maintained evidence."
+  },
+  {
+    "path": "GGS/Data/Returns.txt",
+    "sha256": "2c5af4c51e2f0eec213e65d14f697298fd3498daae75d5ab017e4a7f45b5755b",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "GGS/Data/ReturnsandDates.txt",
+    "sha256": "f1112b676ea8dd7d0df4e48983ca614d10fc67b9197dd30c9a9af3a802e1431a",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "GGS/Data/WikipediaText.txt",
+    "sha256": "6b8a1c4b0b03d153862ff85f27ca01fad71848cafb8b1ce4ef0d50e8c369259f",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "GGS/NLP_Example.py",
+    "sha256": "fc4999b5fb5e5969555aa83d04f38da801de1cce8a9f6454e83b7202c5ab315c",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  },
+  {
+    "path": "GGS/README.md",
+    "sha256": "dad1ded9b446b5b7f8756ab5de700861b731b9b7db98b3902697df9ce13e99aa",
+    "disposition": "Attribution retained in NOTICE; upstream original preserved on old."
+  },
+  {
+    "path": "GGS/__pycache__/ggs.cpython-39.pyc",
+    "sha256": "674d88cc917e57969fe2b3b5b5963e0cf16749ad14f6ec90527f1d517cfe63ce",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "GGS/financeExample.py",
+    "sha256": "0b6a821602c97ec5c71fe4e087e2ca682c89ebe709ec86ad2a9d655e6d45a45d",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  },
+  {
+    "path": "GGS/finance_ex.ipynb",
+    "sha256": "a3d645770efbd40b65226df09e84285d0317d6a49096c647f4101888387a8309",
+    "disposition": "Superseded notebook: original on old; saved results withdrawn from maintained evidence."
+  },
+  {
+    "path": "GGS/ggs.py",
+    "sha256": "ed3052710f31fe72d8b5e5c15e98922debacce411247ab4e5982f6aad71391eb",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  },
+  {
+    "path": "GGS/helloworld.py",
+    "sha256": "a98adb516c07186b6600d6f8ab8111aed08d8433dd96a667e1fbdc2db4349785",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  },
+  {
+    "path": "GGS/syntheticExample_GGS.py",
+    "sha256": "a6ebdb3b8cf7c58af9465fd523d1ce7a7ac69da630fc8fc60498ef3b12020e52",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  },
+  {
+    "path": "data/index_data.csv",
+    "sha256": "1177d4bffc68bd9a891456299a1f9fb88c1fe0da2b37adebb9a506ade4e0a114",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays EM AGG.xlsx",
+    "sha256": "e36f51be3d27962c82761cf1ecdeb9716d6c37911bcff6b73b7dbde39e82b6c5",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays Global AGG.xlsx",
+    "sha256": "8d278106dd1828a8ff058254f509c09775a3811e924f79e2ffe6dfd8852aee66",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US 1-3 month treasury.xlsx",
+    "sha256": "a4f95a1a487833016672be4decc40089554236aa2c0d3ea56ba44f8043a4b677",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US ABS.xlsx",
+    "sha256": "0fe1b5f9d3a60ac3df94d5d248f2260cc67ee39370a3fe950d3a5606c72f02e7",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US AGG.xlsx",
+    "sha256": "1e1a5bfe00cf97bdcbb735d18835ef8f7d399527a00301de23d0fa289abc415b",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US Corp HY.xlsx",
+    "sha256": "8dea29d7dc46fefec5e7c8bf269cab18547760b43029564d7144a67ab3865fec",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US Corp IG.xlsx",
+    "sha256": "71d969db4e9653d4399051c391f9f8bbef1369b9d336123543186c1cae1d3a76",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US Inflation Protected 7-10 year.xlsx",
+    "sha256": "b45c2e679065650ad91d4cae0d68655e0cb83ae076bc847ba4eb1d93aa394fa9",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US Inflation Protected.xlsx",
+    "sha256": "b89aaa455010edf87edc71c2d763adfd247f5fa6aae7d809168a818381ecc895",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg Barclays US Long Gov credit.xlsx",
+    "sha256": "5dbc9c54f8c6c3f3d64c5ba8e0949ade8d7b23bb0243a9b6fcf02a728c2bf4d8",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg US 20+ Treasury.xlsx",
+    "sha256": "7df2b4bada8207371db1cd8a248b1882886e3f99b2b0acdedf5dc8a254e6efb0",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Bloomberg US 7-10 Treasury.xlsx",
+    "sha256": "5207c4056d14d9d481b7cb57b9e4fd52591e1ea27d509e51933f9be4b819a6f0",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/ICE US 20+ TREASURY.xlsx",
+    "sha256": "71fd05201c7f369305b39422859913118dca0fdcd2faedfa2aafe9f46000a968",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/ICE US 7-10  TREASURY.xlsx",
+    "sha256": "4752b2445db7d0098d511d8cc758c98dae29c0719a8575419e87f489b4828b39",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/MSCI Emerging.xlsx",
+    "sha256": "5dad35b6c73aa206a098b54659577dabdca9721a3329e3ee880d9caad36d6622",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/MSCI World Gross.xlsx",
+    "sha256": "9a9b5fea9647a629e9b976aee1b3a77454d690ced371278e7fc37881bc7913e8",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/MSCI World Real Estate.xlsx",
+    "sha256": "f61c335dfb657488a127dc66335a172bb3593ce79a72c1ebc470138582644b5b",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/MSCI World Value.xlsx",
+    "sha256": "405318f76bf646f525c9959ea9a6c3184ad434bf45312551bd432dbf4f312308",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/MSCI World x US.xlsx",
+    "sha256": "da106ecf9b187609ab20e21eafb7377a95194adeba2bf99b0ced64f53ed7f708",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/MSCI World.xlsx",
+    "sha256": "bc50e8c924e5188c3d93457de4f62160491459e4aa7475c0edde2ac0b4f6b55d",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/MSCI_All Country World.xlsx",
+    "sha256": "3dad6276395012413f0c2c17207a7378fdad6455ad328dc9c1b8eeccbd7fe513",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/Russel 300 TR.xlsx",
+    "sha256": "7aaccdee54ebd1b32a9335186de4a387b45a169acc5f44dbf26bf676f3471179",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/SNP GSCI TR.xlsx",
+    "sha256": "e8e45b5ec62e7c15a4921bb96ec9e5120b27b6269997d8021249f0e9a0cf93af",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/SNP global infrastructure.xlsx",
+    "sha256": "73527e76618068ebb972e3d6243ca29d02e46b6c94f77a7e50f10a0a15fff89d",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/SNP metal and mining.xlsx",
+    "sha256": "691ffd5ab2dc0ab0642e409eaa32ed4a441dcced6487c3468aaa9191ac283116",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/SNP oil gas exploration and production.xlsx",
+    "sha256": "8182192f815b7331c1b368f542d910b63c7dd1e096cbe7f4f853cd55e8733e1e",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/index_data/historical_asset_return_daily.csv",
+    "sha256": "9c23b340dfa0cc6b1fc575b56613435117e367c56a699975668d80d504219237",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/nasdaq_screener_2022_03_13/nasdaq_screener.xlsx",
+    "sha256": "646e41f3ca9e60f078c29dec4992cd1de5ede4f55fd4f328db7d80674534508c",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/nasdaq_screener_2022_03_13/nasdaq_screener_AMEX.csv",
+    "sha256": "d2b5cd061cc271600cbd81781532bd8c77e874cfc7de5a065a29d527134cd9d6",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/nasdaq_screener_2022_03_13/nasdaq_screener_NASDAQ.csv",
+    "sha256": "b230c7bad55f85fdcf7bfe10acf2bab4acd6654fb2070624242a0631815e3fb8",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "data/nasdaq_screener_2022_03_13/nasdaq_screener_NYSE.csv",
+    "sha256": "75b9b5af2bdb2fb0b311e45a01fe5f193961ecb2ee07e04641ddbc7ed8159407",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "post/img/SPY_2022-09-30_09-02-34.png",
+    "sha256": "57dfe8b0df404b498ca151ab15a41d352dee91c5b6a23822b77652fe81bc19c7",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "requirements.txt",
+    "sha256": "7a37add9e4f23815de0db49215a60b82b771ceb83d655edabcf0416cebb009a8",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "result/Hidden Markov (Mixture) Model_Regime Subplots.png",
+    "sha256": "8d6066ad27c1287154b35a200bcfa3a08eb1c6dfb18c6308b7a42568b8e0ff74",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "result/Hidden Markov (Mixture) Model_SPY Regimes.png",
+    "sha256": "0a704c8afee629372e6192039dc881d7a5da3a2dd9cfa72666446aed99743613",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "to_read/Greedy Gaussian segmentation of multivariate time series.pdf",
+    "sha256": "6ce9f430822dded827ff88c353d988980e8327379abd6086c4a5387f8ca719a9",
+    "disposition": "Historical data/third-party asset: local recovery only; provenance or redistribution rights not established."
+  },
+  {
+    "path": "utils/index_data.py",
+    "sha256": "b5ba28a3dfd1a3979e65705bcde8a737474c7c7ffcc3b1ebef9a19effe75141c",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  },
+  {
+    "path": "utils/regular_rebalancing.py",
+    "sha256": "8c28a4327f4ee62ac3bc58ba044ac9705c6e4c7b40a4995ada79d2bfce158315",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  },
+  {
+    "path": "utils/yahoo_stock_data.py",
+    "sha256": "fc3c77679782ac05ca6bbdca19b96cd02276f9b320e2cea3fca3afbd94176681",
+    "disposition": "Superseded implementation: original on old; maintained workflow replaces hidden state and unvalidated assumptions."
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "run_utc": "2026-09-18T16:58:11.316181+00:00",
+  "python": "3.12.14 (main, Sep  1 2026, 14:16:52) [Clang 22.1.3 ]",
+  "platform": "Linux",
+  "settings": {
+    "k": 2,
+    "seed": 19,
+    "lookback": 504,
+    "loss": "log(v)+r_next^2/v",
+    "forecast_floor": 1e-08
+  },
+  "source_and_code": {
+    "pyproject.toml": "cd4c5fff973f36896dc6add8e1cff0bd728091952578dd10110aa0096f553b98",
+    "uv.lock": "775829b44a06dc67b6380fbf728422d0dbc80e8aee0d3b6448e76edb65a8b300",
+    "research/PROTOCOL.md": "e561d3b659ee3bbbd90ac52ea0c3164960cc2b9cc2d9c3c52b145c96af2f8ef3",
+    "research/data/input_manifest.json": "f08a555511244deede8d797b9c0e721e60818f8cb5c6cc8f0f31c3ba347d55e2",
+    "research/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "research/acquire.py": "cf6f57aa489e739d20491ed62e8dc33d3e154fdf0de6a5086223ca52bc2422a0",
+    "research/build_notebook.py": "a379803ef4a449bebb6902f9e12c3d3c8a952cd1153f24282ddfebb78dbc0ea9",
+    "research/check_artifacts.py": "44cff633fabb7776641df0c355005c237e3e69db724e4eb623b806ec8fbed2fe",
+    "research/common.py": "f6a87ab1fe76838155011e55e7a964e6912d7f0025a1b862eff96538a4ac8f02",
+    "research/models.py": "73237c95fa60779b92bc8c1f023da39b200c2baddc0296d72d86644b136928f7",
+    "research/refresh_sources.py": "47d7b645c915feb2954b56aa220b2f42eaa0a93038d0e60661c3b2c6cee1c857",
+    "research/run_study.py": "c50a9838b90d52af8a297d596175466b236235eae0f9901af4cda79f32985d13"
+  },
+  "artifacts": {
+    "research/figures/forecast_comparison.png": "c6cb171325c4e2bbc87e5177d5c5f1813aaffcdde67941b974a851babf1eeb76",
+    "research/figures/overlay.png": "9e0709135531e25b9bf819d2d1da0a151069e47b6ba42041e8cd150312c96413",
+    "research/figures/revisions.png": "421ac82ec05ccc597f25093857a1db23ee2ee514915ddd6a4f1fbff4a932cbbf",
+    "research/figures/segmentation.png": "fd17faa42f19eab6738023351a2170cd9d5f729c6eff237fcff5892e985f57dc",
+    "research/figures/states.png": "7b80e7c12b13953974332bcb7c15bc8f894f6611092ab3dc1b5c7d36fa673281",
+    "research/results/data_audit.json": "b6758a4bd77ea5029461656b89866820ccef348a6498438d983afc0048c50d64",
+    "research/results/diagnostics.csv": "c8f40e13eae58a06c7ca7bf57c2b35e62b2787e9b1006231007c315a994474fb",
+    "research/results/forecast_metrics.csv": "d6aa15665ca1c8191f1cc65222ba621de6ce8dc18eb94f9fbc191ed895ac67af",
+    "research/results/headline.json": "7fe17595bba7ced22e4b3f497512e826387bb3e73e9072675e8ed3408eccc378",
+    "research/results/loss_intervals.csv": "4db93b8045d0481717cc198100cfeae9d52c4798f4f43d1472b8f6123009dd01",
+    "research/results/overlay_intervals.csv": "c6019e65d5ecf4e00546b618f09ad485b0e2450c2866f61fd59bf3eed771833e",
+    "research/results/overlay_performance.csv": "a5511d35ef9d2e3989110e84be169c6eb1bf56f774205d4d979a08386380c4eb",
+    "research/results/retrospective_breakpoints.csv": "c9697112d520cccff2401a6cf83bde54d8fc5ec2c30ae93cc459622505c13a86",
+    "research/results/sensitivity.csv": "1c344290c17b97e64384870aab9c33d4277dc56f7a0efd32be7c0c47b0017a20",
+    "research/results/source_refresh.csv": "149ca2eeb607829c0b795f8b24a06675f032cf0792fd9a82977ec5da8c76e328",
+    "research/results/state_stability.csv": "fc4eaa6a8e0bb28eeab0dfad9ed671f0395a2925eaf18d01f99022146eed69e6",
+    "research/results/synthetic_detection.csv": "b85eb63f24ecf63af71124d04700be3a6bd07b79522677c9dda8a50a3fe61e92"
+  },
+  "private_artifacts": {
+    "research/results/paths/fits_floor01.csv": "963163e29964bd58914a72f953c7e3ece670c37d32a70dddaa25a047d1d21eab",
+    "research/results/paths/fits_primary.csv": "6e5da182c4ae0d2007395b4eefa493506a62036901e1d694ee3dcad563f18bfe",
+    "research/results/paths/fits_seed41.csv": "73ca3a65e07e6d8af6f2d59e96a2d0f98964aab89d37f158f07d263d34ec5c92",
+    "research/results/paths/fits_spy_only.csv": "a6c0c1fa127fae650c5cc6a851d6de503e04eff7ed0d6b0e98f124f30e55d6a6",
+    "research/results/paths/fits_three_states.csv": "b7375b59d36b53516457f064b1f55ffc9c276c814ddd1fd734d5587c74ea4728",
+    "research/results/paths/forecasts_floor01.csv": "ed15491e992fe8da528f611b793a6ef75219360c3d801043ed84a8a8d4b3fad4",
+    "research/results/paths/forecasts_primary.csv": "bbd36b297598279ba378348a1e9936ccad36499fd688b62f67cb24336fa261fd",
+    "research/results/paths/forecasts_seed41.csv": "a4d3ace1cd1e541ea38a3043e967b58f5ee615738a07596571b4cf9ebc196f19",
+    "research/results/paths/forecasts_spy_only.csv": "d60a4f27eea07be83b16e4e54d979b0591317ed77eeddfa189b609c6eddd4849",
+    "research/results/paths/forecasts_three_states.csv": "91edb95899577727764cac55fc84a99d36aa8cc23d5c02711b542af89c71fe97",
+    "research/results/paths/overlay.csv": "b8a20bacf769b3f2fc44b48aef9d7d8e7d102f23506a02012bb9f05f1536b037",
+    "research/results/paths/state_comparison.csv": "d25a5aba9a58cb3ec4a7ac56ce5c46e0d6ef65c6c5a545db64bfbfab7efb053f"
+  }
+}

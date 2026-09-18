@@ -1,0 +1,3 @@
+ticker,old_last,new_last,added_rows,overlap_price_max_relative_revision,overlap_revised_rows_gt_1e_10
+SPY,2026-08-31,2026-09-17,12,7.992938176881736e-07,1402
+TLT,2026-08-31,2026-09-17,12,1.0556995282406945e-06,1684

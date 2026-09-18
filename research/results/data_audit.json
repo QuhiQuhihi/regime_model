@@ -1,0 +1,19 @@
+{
+  "price_rows": 2064,
+  "return_rows": 2063,
+  "first_price": "2018-07-02",
+  "last_price": "2026-09-17",
+  "missing": 0,
+  "duplicates": 0,
+  "max_abs_return": {
+    "SPY": 0.10942366940471693,
+    "TLT": 0.07519578038464125
+  },
+  "returns_over_25pct": 0,
+  "unchanged_price_fraction": {
+    "SPY": 0.001454192922927775,
+    "TLT": 0.00290838584585555
+  },
+  "calendar": "XNYS",
+  "exclusions": "Only first undefined return; no missing observations filled or excluded."
+}
