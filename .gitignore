@@ -11,3 +11,17 @@ research/preview/
 *.partial
 .env
 *.key
+
+# Local agent instructions and session state
+.agents/
+.codex/
+AGENTS.md
+AGENTS.*.md
+CODEX.md
+CODEX.*.md
+codex.md
+codex.*.md
+codex-*.log
+*.codex.log
+RENOVATION_AGENT_INSTRUCTIONS.md
+.renovation_backups/
