@@ -1,21 +1,20 @@
-# Acceptance evidence — 19 September 2026
+# Completed research checks — 24 September 2026
 
-| Brief criterion | Evidence and boundary |
-|---|---|
-| Original components and clear question | [Audit](AUDIT.md), per-file [legacy inventory](legacy_inventory.json), original `old` branch; retained/replaced/archived claims distinguished. |
-| Versioned appropriate inputs | [Sources](SOURCES.md), [manifest](data/input_manifest.json), pinned hashes. Raw market snapshots require permitted local access; FICC uses a committed constructed fixture. |
-| Study actually executed | [Executed notebook](../study.ipynb), [machine-readable summaries](results/), [generated results](../docs/02-results.md). |
-| Meaningful comparisons | [Protocol](PROTOCOL.md) and [methods](../docs/01-methods.md) define timing, universe/risk controls or pricing conventions. |
-| Consequential defects handled | [Audit](AUDIT.md) connects defects to maintained replacements or withdrawn legacy claims. |
-| Numerical/timing/accounting checks | Forward-filter normalization, future-data perturbation and delayed cost-aware overlays; 4 tests. `research/check_artifacts.py` additionally reconciles saved artifacts independently. |
-| Uncertainty and sensitivity | Saved next-session losses, 5/21/63-session block intervals, five model specifications, state revisions and synthetic alarm delays. |
-| Headline consistency | Generated README/results, executed notebook summary and saved headline JSON agree; independent checker reconstructs key values. |
-| Environment and executable report | Locked offline sync, lint/format and 4 tests pass; 12 executed notebook cells with 5 embedded figures and no errors. |
-| Reproduction and CI | [README commands](../README.md), ignored cached inputs and recoverable checkpoints; CI checks synthetic/public artifacts, not restricted historical reproduction. |
-| Maintained files and attribution | `.gitignore` excludes raw/recovery/environment paths; [NOTICE](../NOTICE) retains attribution. Original history is preserved rather than rewritten. |
-| Publication boundary | [PUBLICATION.md](../PUBLICATION.md): local artifacts checked; no live publication or complete historical rights/credential clearance. |
-| Supported conclusion and next experiment | HMM adds no established forecast improvement over EWMA in the late sample; the interval includes zero. [Agenda](RESEARCH_AGENDA.md) is explicitly unrun. |
+| Question | Evidence and scope |
+| --- | --- |
+| Does the project answer the researcher's revised question? | Five connected chapters, a calibration playbook and an executed notebook cover immediate recognition, delayed confirmation, historical interpretation and an explicit model-reset action. |
+| Is the history broader than US equities? | Eight asset exposures, 5,172 matching adjusted-close observations each, March 2006–21 September 2026; complete XNYS calendar, no fills. |
+| Are model changes inspectable? | The original project remains on `old`; the previous renovated main is preserved before this change. The feature-design amendment retains the noisy raw-return model and matched-date reset benchmark. |
+| Did the experiment run? | 220 monthly feature-model fits, zero failed primary fits, 4,600 scored five-session forecast dates; all variants computed. |
+| Are the consequential calculations checked? | Nine tests pass, including forward and fixed-lag posterior enumeration, future-perturbation invariance, alarm spacing, reset matrices, costs in the retained baseline and target-date accounting. |
+| Are the saved results independently reconciled? | Every scored target rebuilt from price-derived returns; matrix diagonals, basket risk, reset dates, headline means and source/output hashes checked. |
+| Is the report executed and readable? | 18 executed code cells, nine embedded figures, no cell errors. Desktop/mobile HTML inspected with Chromium; all images load, no JavaScript/math errors, mobile document width 390 px. |
+| Are plots and links checked? | Original figures visually inspected; notebook and Markdown local links checked. Forecast targets, date conventions, delayed labels, conditional samples and uncertainty are stated alongside evidence. |
+| Is the public tree bounded? | Raw histories, daily paths, environments, private recovery material and local instructions remain ignored. Source notices retained. No full-history rights clearance is claimed. |
+| What remains unproven? | The stable state map has no established incremental calibration advantage. True market break dates, posterior calibration, tradable strategy returns and prospective performance remain unverified. Follow-on research is marked unrun. |
 
-All completed checks refer to local execution. Provider data accuracy, point-in-time vintages,
-actual transaction execution and unrestricted redistribution are not certified. See the
-[work log](WORKLOG.md) for commands, recovery and the visual/HTML inspection boundary.
+The paired intervals are pointwise and conditional on the historical fitted paths.
+The feature representation was added after the raw-return replay, so the new comparison
+is exploratory. The latest monthly aggregate is a partial September period, ending on
+21 September even when its index is the month-end label. CI validates offline tests and
+public outputs, not a fresh download or complete historical rerun.

@@ -1,46 +1,116 @@
-# Do market states improve risk forecasts?
+# What changes when regimes become a research tool?
 
-Through 2026-09-17, the late-segment two-state HMM minus EWMA mean next-session risk loss is **+0.2539**, with paired 95% block interval **[-0.1024, +0.8795]**. Negative favors HMM. The result does not establish incremental forecasting value, and does not establish general regime-prediction ability.
+Across eight asset exposures and 4,600 matched forecast dates, the HMM-triggered reset has mean risk-loss difference **-0.0005 (95% interval [-0.0249, +0.0167])** versus slow EWMA. The observable reset gives **-0.0023 (95% interval [-0.0096, +0.0021])**; continuously fast EWMA gives **-0.0022 (95% interval [-0.0380, +0.0249])**. Negative favors the alternative. These are calibration losses, not investment returns.
 
-![Forecast comparison](../research/figures/forecast_comparison.png)
+## Calibration is the practical test
 
-## Forecast evidence
+An alert changes the input to a research decision: replace the slow risk estimate with
+one based on the latest 20 sessions, then update it faster for the next 21 sessions.
+The test scores the following five sessions, so an attractive retrospective label
+cannot improve a forecast that was already frozen.
 
-| period | model | n | mean_loss | mean_forecast | realized_to_predicted |
-| --- | --- | --- | --- | --- | --- |
-| late | EWMA | 428 | -8.31006 | 0.000118494 | 0.988801 |
-| late | GMM | 428 | -7.73757 | 0.000100289 | 1.16829 |
-| late | HMM | 428 | -8.05618 | 9.00073e-05 | 1.30175 |
-| late | Single state | 428 | -7.73709 | 0.000100189 | 1.16946 |
+| Calibration rule | Loss difference vs slow EWMA | Pointwise 95% interval |
+| --- | --- | --- |
+| Fast EWMA | -0.0022 | [-0.0380, +0.0249] |
+| Observable reset | -0.0023 | [-0.0096, +0.0021] |
+| HMM reset | -0.0005 | [-0.0249, +0.0167] |
+| HMM state forecast | +0.1889 | [+0.0607, +0.4127] |
+| Raw-return HMM reset | -0.0137 | [-0.0449, +0.0076] |
 
-The loss uses the same next-session squared SPY return for all models. Its absolute level is not a performance percentage. A GMM is an iid mixture; its current posterior is not a Markov next-state forecast. HMM decisions use forward filtering, not full-sample smoothing.
 
-## Bounded sensitivity
+![Calibration comparison](../research/figures/practical/calibration_comparison.png)
 
-| variant | estimate | lower95 | upper95 | block | draws | n | failed_hmm_refits | refits |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| primary | 0.253878 | -0.102351 | 0.879465 | 21 | 2000 | 428 | 0 | 74 |
-| three_states | 0.266082 | -0.120088 | 0.951861 | 21 | 2000 | 428 | 1 | 74 |
-| seed41 | 0.248807 | -0.10677 | 0.880139 | 21 | 2000 | 428 | 0 | 74 |
-| floor01 | 0.253897 | -0.102353 | 0.87955 | 21 | 2000 | 428 | 0 | 74 |
-| spy_only | 0.293272 | -0.0978238 | 1.00043 | 21 | 2000 | 428 | 0 | 74 |
+The primary targets are eight individual asset second moments, weighted equally in the
+loss. This does not give equities more importance because their raw volatility is larger.
+The supporting basket uses quarter weights in US equities, long Treasuries, gold and
+commodities; its risk includes their correlations. Loss is log(v) + realized r² / v,
+with the five-session mean squared return as the target.
 
-One primary HMM/EWMA comparison; these extra intervals are pointwise exploratory diagnostics, not independent confirmations. Failed fits use EWMA and are counted.
+Intervals use paired 63-session circular blocks and 2,000 draws. Overlapping five-day
+targets, cross-asset dependence and each day's common outcomes are preserved by the
+paired sampling. The intervals condition on fitted paths; they do not remove model
+selection, revised-data or familiar-history uncertainty. Two primary alert contrasts
+have pointwise intervals, without familywise coverage.
 
-## Decisions after execution costs
+## Which representation gives a useful research picture?
 
-| strategy | cagr | volatility | max_drawdown | annual_turnover | mean_risky_weight |
-| --- | --- | --- | --- | --- | --- |
-| EWMA target | 0.0736075 | 0.105281 | -0.120395 | 5.22185 | 0.731952 |
-| HMM overlay | 0.141474 | 0.124193 | -0.112003 | 16.2087 | 0.886616 |
-| Static 62.5% | 0.112192 | 0.107285 | -0.120658 | 0.414957 | 0.625 |
+| Model inputs | Sessions with a label change | Review alerts | Reviews per year |
+| --- | --- | --- | --- |
+| Daily returns | 55.3% | 78 | 4.27 |
+| Risk and dependence features | 3.2% | 26 | 1.42 |
 
-The overlay trades one close after the signal and first earns the following session. This delay differs from the one-step forecast target; lower exposure can explain safer returns. Zero cash accrual, closing fills, fixed surviving ETFs and revised adjusted closes limit investability.
 
-## Description, detection and prediction
+![Representation comparison](../research/figures/practical/representation_comparison.png)
 
-The synthetic null alarm rate is 0.0% across 50 runs. The variance-break example detects after the change in 100.0% of runs; conditional mean delay is 12.4 observations. These are constructed variance changes, not labeled market recessions. The simplified greedy splitter is not the complete optimized GGS algorithm.
+The original daily-return HMM and the feature-based HMM are both retained. The
+feature version describes recent risk levels and equity–bond dependence; it was
+introduced after inspecting the first model's rapid label changes. This is an
+explicit exploratory amendment, not an independent validation sample. Smoother labels
+are useful for interpretation but do not, by themselves, establish better forecasts.
+The raw-return reset is re-scored over the same dates as the feature-based policy.
 
-![Causal and retrospective states](../research/figures/states.png)
+The result supports a specific workflow: use the more persistent map to organize
+research and review scenarios, while maintaining continuous risk updates. The
+feature-based reset changes the average calibration loss by very little, with an
+interval spanning zero. Its direct state-moment forecast is worse than the slow
+baseline under this specification. A useful descriptive state is not automatically
+the best forecasting model.
 
-Full-sample states revise historical labels using information unavailable then. This is useful historical organization but cannot substitute for the forecast comparison. No state is called a recession. Consult [methods](01-methods.md), [protocol](../research/PROTOCOL.md), [sources](../research/SOURCES.md), and [next experiment](../research/RESEARCH_AGENDA.md).
+## A fast response has an operating burden
+
+| Alert | Alerts | Per year | Time in reset/fast mode | Reference episodes matched |
+| --- | --- | --- | --- | --- |
+| Observable reset | 1 | 0.05 | 0.5% | 1/11 |
+| HMM reset | 26 | 1.42 | 12.4% | 7/11 |
+
+
+![Alert timing](../research/figures/practical/alert_timing.png)
+
+The conservative observable threshold generates only **one alert in the entire replay**.
+Its quietness is not evidence of reliable detection: the synthetic primary check
+misses even the stipulated volatility doubling. The predeclared 1.3 sensitivity gives
+six historical alerts; the 1.7 sensitivity gives none. These outcomes are shown rather
+than silently replacing the weak primary threshold with a more favorable one.
+
+In a prolonged stressed state, no new alert may be issued because the rule has not
+re-armed. For example, the feature HMM is already stressed from its first June 2008
+review through the September escalation. The event table records high-state status
+separately, so the new-alert match rate is not presented as true-regime detection accuracy.
+
+The reference is an observable escalation in recent volatility, not a known true
+regime boundary. A negative lag means earlier than that reference; unmatched alerts
+can reflect another sort of change and are not automatically false alarms. The
+[complete event table](../research/results/practical/episode_timing.csv) retains misses.
+
+## Allowing a short delay changes the label
+
+On common available dates, **8.5%** of
+labels differ after five sessions and **21.2%**
+after twenty. The full-history map differs on **45.1%**.
+These revisions can help research interpretation. They also show why the date a label
+becomes available belongs beside the date it describes.
+
+![Delayed confirmation](../research/figures/practical/revision_tradeoff.png)
+
+## Inspect the contrasts, not just an average
+
+The [subperiod table](../research/results/practical/subperiods.csv) covers 2008–2014,
+2015–2019, 2020–2023 and 2024–latest. [Sensitivity results](../research/results/practical/sensitivity.csv)
+retain two-state/three-state fits, a second seed and both tighter and looser alert
+thresholds. None replaces the original specification. Per-asset intervals are in
+[asset_comparison.csv](../research/results/practical/asset_comparison.csv).
+
+![Risk estimate replay](../research/figures/practical/calibration_replay.png)
+
+## Latest historical research snapshot
+
+As of **2026-09-21**, the broad HMM label is **Active**, stressed-state
+probability **0.0%**, and normalized uncertainty **0.00**.
+The fast/slow risk ratio is **0.97**, while the trailing
+63-session US-equity/long-Treasury correlation is **+0.36**.
+This is the endpoint of the recorded historical replay, not a live signal service.
+[The snapshot](../research/results/practical/latest_monitor.json) contains the full
+probability vector, asset-direction context and last review dates.
+
+[Methods](01-methods.md) · [Historical event lab](03-historical-replays.md) ·
+[Researcher's playbook](04-calibration-playbook.md) · [Exact protocol](../research/PROTOCOL.md).

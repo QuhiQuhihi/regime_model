@@ -1,176 +1,150 @@
-"""Public-file checks and independent numerical reconciliation."""
+"""Public deliverables and independent reconciliation of the practical experiment."""
 
 import argparse
 import json
 import re
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import nbformat
 import numpy as np
 import pandas as pd
-import nbformat
-from research.common import ROOT, RESULTS, check_hashes, load_returns
+from research.common import sha
+from research.practical_config import ROOT, RESULTS, PATHS, SETTINGS, ASSETS
+from research.practical_data import load_data
+from research.run_study import provenance
 
 
 def public_checks():
-    tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().split("\0")
+    tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT, text=True).split("\0")
     forbidden = (
         "research/data/raw/",
         "research/private-legacy/",
         "research/results/paths/",
         ".venv/",
         ".cache/",
+        ".codex/",
+        ".agents/",
     )
     for name in tracked:
-        if (
-            name
-            and (ROOT / name).exists()
-            and (name.startswith(forbidden) or Path(name).name == ".env")
+        if name and (
+            name.startswith(forbidden)
+            or Path(name).name
+            in [".env", "AGENTS.md", "CODEX.md", "RENOVATION_AGENT_INSTRUCTIONS.md"]
         ):
-            raise ValueError("Blocked publication path is tracked: " + name)
+            raise ValueError("Blocked tracked path: " + name)
     required = [
         "README.md",
-        "PUBLICATION.md",
-        "NOTICE",
         "study.ipynb",
         "pyproject.toml",
         "uv.lock",
-        "research/AUDIT.md",
         "research/PROTOCOL.md",
-        "research/SOURCES.md",
-        "research/data/input_manifest.json",
-        "research/RESEARCH_AGENDA.md",
-        "research/WORKLOG.md",
+        "research/data/practical_manifest.json",
         "docs/01-methods.md",
         "docs/02-results.md",
+        "docs/03-historical-replays.md",
+        "docs/04-calibration-playbook.md",
+        "docs/05-reproduction.md",
     ]
     for name in required:
-        if not (ROOT / name).is_file():
-            raise ValueError("Missing deliverable: " + name)
-    markdown = [
+        assert (ROOT / name).is_file(), name
+    for p in [
         ROOT / "README.md",
         ROOT / "PUBLICATION.md",
         *list((ROOT / "docs").glob("*.md")),
         *list((ROOT / "research").glob("*.md")),
-    ]
-    for p in markdown:
+    ]:
         for link in re.findall(r"\]\(([^)]+)\)", p.read_text()):
             if re.match(r"https?://|mailto:|#", link):
                 continue
             target = link.split("#")[0]
             if target and not (p.parent / target).exists():
-                raise ValueError(f"Broken link in {p.name}: {link}")
+                raise ValueError(f"Broken link in {p}: {link}")
     nb = nbformat.read(ROOT / "study.ipynb", as_version=4)
     nbformat.validate(nb)
-    code = [c for c in nb.cells if c.cell_type == "code"]
-    if not code or any(c.execution_count is None for c in code):
-        raise ValueError("Notebook is unexecuted")
-    if any(o.output_type == "error" for c in code for o in c.get("outputs", [])):
-        raise ValueError("Notebook has errors")
-    if not any("image/png" in o.get("data", {}) for c in code for o in c.get("outputs", [])):
-        raise ValueError("No notebook figures")
+    cells = [c for c in nb.cells if c.cell_type == "code"]
+    assert cells and all(c.execution_count is not None for c in cells)
+    assert not any(o.output_type == "error" for c in cells for o in c.outputs)
+    count = sum("image/png" in o.get("data", {}) for c in cells for o in c.outputs)
+    assert count >= 8, count
     print(
-        f"Public checks: {len(code)} executed cells, links/figures valid; no raw-history download"
+        f"Public checks passed: {len(cells)} executed cells, {count} embedded figures, links and publication paths."
     )
 
 
 def independent_checks():
-    check_hashes()
-    project = "regime_model"
-    if project == "project_FICC_Quant":
-        flows = pd.read_csv(RESULTS / "cashflows.csv")
-        v = pd.read_csv(RESULTS / "valuation.csv").set_index("instrument")
-        assert abs(flows.query('instrument=="bond"').pv.sum() - v.loc["bond", "quantlib_pv"]) < 1e-8
-        assert (
-            abs(flows.query('instrument!="bond"').pv.sum() - v.loc["payer_swap", "quantlib_pv"])
-            < 1e-8
-        )
-        assert (
-            abs(v.loc["bond", "clean"] + v.loc["bond", "accrued"] - v.loc["bond", "dirty"]) < 1e-10
-        )
-        assert pd.read_csv(RESULTS / "calibration.csv").residual.abs().max() < 1e-8
-        fx = pd.read_csv(RESULTS / "fx_parity.csv").iloc[0]
-        assert abs(fx.spot * fx.eur_discount - fx.fair_forward * fx.usd_discount) < 1e-12
-        bump = pd.read_csv(RESULTS / "bump_convergence.csv").pivot(
-            index="instrument", columns="bump_bps", values="signed_dv01"
-        )
-        assert (bump[0.1] - bump[5.0]).abs().max() < 1e-4
-        h = pd.read_csv(RESULTS / "hedge.csv").iloc[0]
-        pnl = pd.read_csv(RESULTS / "scenario_pnl.csv")
-        np.testing.assert_allclose(
-            pnl.hedged_pnl, pnl.unhedged_bond_pnl + h.swap_units * pnl.swap_pnl_per100, atol=1e-12
-        )
-        risk = pd.read_csv(RESULTS / "independent_risk.csv").iloc[0]
-        assert abs(risk.zero_spread_analytic_dv01 - risk.zero_spread_central_dv01) < 1e-7
-    elif project == "project_Asset_Allocation":
-        r = load_returns()
-        d = pd.read_csv(RESULTS / "paths/daily.csv", parse_dates=["date"])
-        w = pd.read_csv(RESULTS / "paths/weights.csv", parse_dates=["date"])
-        trades = pd.read_csv(
-            RESULTS / "paths/trades.csv", parse_dates=["execution_date", "information_date"]
-        )
-        for strategy, g in w.groupby("strategy"):
-            g = g.set_index("date")
-            saved = d.query("strategy==@strategy").set_index("date")
-            calculated = (g[list(r.columns)] * r.reindex(g.index)).sum(axis=1)
-            np.testing.assert_allclose(saved.gross, calculated, atol=1e-12)
-            np.testing.assert_allclose(
-                saved.net, (1 + calculated) * (1 - saved.cost) - 1, atol=1e-12
-            )
-        assert (trades.information_date < trades.execution_date).all()
-        for row in trades.itertuples():
-            target = np.array([getattr(row, "target_" + t) for t in r.columns])
-            signed = np.array([getattr(row, "trade_" + t) for t in r.columns])
-            assert abs(np.abs(signed).sum() - row.turnover) < 1e-12
-            assert abs(row.cost - 5e-4 * row.turnover) < 1e-12
-            assert abs(target.sum() + row.cash - 1) < 1e-10
-        late = d.query('date>="2025-01-01"').pivot(index="date", columns="strategy", values="net")
-        a, b = late.HRP, late["EQ risk HRP"]
-        estimate = np.sqrt(252) * (a.mean() / a.std(ddof=1) - b.mean() / b.std(ddof=1))
-        assert (
-            abs(estimate - json.loads((RESULTS / "headline.json").read_text())["estimate"]) < 1e-10
-        )
-    else:
-        r = load_returns()
-        f = pd.read_csv(
-            RESULTS / "paths/forecasts_primary.csv", parse_dates=["information_date", "target_date"]
-        )
-        assert (f.information_date < f.target_date).all()
-        np.testing.assert_allclose(
-            f.target_squared, r.SPY.reindex(f.target_date).to_numpy() ** 2, atol=1e-14
-        )
-        np.testing.assert_allclose(
-            f.loss, np.log(f.forecast) + f.target_squared / f.forecast, atol=1e-10
-        )
-        hm = f.query('model=="HMM"')
-        np.testing.assert_allclose(hm[["p_state0", "p_state1"]].sum(axis=1), 1, atol=1e-12)
-        loss = f.query('target_date>="2025-01-01"').pivot(
-            index="target_date", columns="model", values="loss"
-        )
-        estimate = (loss.HMM - loss.EWMA).mean()
-        assert (
-            abs(estimate - json.loads((RESULTS / "headline.json").read_text())["estimate"]) < 1e-10
-        )
-        o = pd.read_csv(RESULTS / "paths/overlay.csv", parse_dates=["date", "information_date"])
-        np.testing.assert_allclose(
-            o.gross, o.earning_weight * r.SPY.reindex(o.date).to_numpy(), atol=1e-12
-        )
-        np.testing.assert_allclose(o.net, (1 + o.gross) * (1 - o.cost) - 1, atol=1e-12)
-        np.testing.assert_allclose(o.cost, o.turnover * 5e-4, atol=1e-12)
-        assert (o.information_date < o.date).all()
-    print("Independent saved-output calculations and source/code hashes: passed")
+    metadata = json.loads((RESULTS / "run_metadata.json").read_text())
+    assert metadata["source_and_code"] == provenance(), "Changed code/settings/input: rerun study"
+    for path, digest in {**metadata["outputs"], **metadata["private_outputs"]}.items():
+        assert sha(ROOT / path) == digest, path
+    _, r = load_data()
+    scores = pd.read_csv(PATHS / "scores.csv", parse_dates=["date", "target_start", "target_end"])
+    dates = r.index
+    h = SETTINGS["horizon"]
+    warm = SETTINGS["lookback"] + SETTINGS["feature_warmup"]
+    # Reconstruct all target values independently using shifted pandas windows.
+    target = r.pow(2).rolling(h).mean().shift(-h)
+    weights = pd.Series({a: 0.25 if a in ["SPY", "TLT", "GLD", "DBC"] else 0 for a in ASSETS})
+    target["BASKET"] = r.mul(weights).sum(axis=1).pow(2).rolling(h).mean().shift(-h)
+    for asset, g in scores.groupby("asset"):
+        np.testing.assert_allclose(g.target, target[asset].reindex(g.date), rtol=1e-10, atol=1e-14)
+    positions = dates.get_indexer(scores.date)
+    assert np.array_equal(scores.target_start.to_numpy(), dates[positions + 1].to_numpy())
+    assert np.array_equal(scores.target_end.to_numpy(), dates[positions + h].to_numpy())
+    np.testing.assert_allclose(
+        scores.loss,
+        np.log(scores.forecast) + scores.target / scores.forecast,
+        rtol=1e-9,
+        atol=1e-10,
+    )
+    matrices = np.load(PATHS / "forecast_matrices.npz")
+    for method in matrices.files:
+        m = matrices[method]
+        valid = m[warm - 1 :]
+        np.testing.assert_allclose(valid, np.swapaxes(valid, 1, 2), atol=1e-14)
+        assert np.linalg.eigvalsh(valid).min() > 0
+        for j, asset in enumerate(ASSETS):
+            g = scores[(scores.method == method) & (scores.asset == asset)]
+            np.testing.assert_allclose(g.forecast, m[dates.get_indexer(g.date), j, j], atol=1e-14)
+        g = scores[(scores.method == method) & (scores.asset == "BASKET")]
+        w = weights.to_numpy()
+        calculated = np.einsum("i,tij,j->t", w, m[dates.get_indexer(g.date)], w)
+        np.testing.assert_allclose(g.forecast, calculated, atol=1e-14)
+    signal = pd.read_csv(PATHS / "signals.csv", index_col="date", parse_dates=True)
+    for method in ["HMM reset", "Observable reset"]:
+        alarms = np.flatnonzero(signal[method].to_numpy())
+        assert (np.diff(alarms) >= SETTINGS["cooldown"]).all()
+        for t in alarms:
+            raw = r.iloc[t - 19 : t + 1].to_numpy()
+            raw = raw.T @ raw / 20
+            expected = 0.9 * raw + 0.1 * np.diag(np.diag(raw))
+            np.testing.assert_allclose(matrices[method][t], expected, atol=1e-14)
+    states = pd.read_csv(PATHS / "primary_states.csv", index_col="date", parse_dates=True)
+    np.testing.assert_allclose(states[["p0", "p1", "p2"]].sum(axis=1), 1, atol=1e-12)
+    delayed = pd.read_csv(
+        PATHS / "primary_revisions.csv", parse_dates=["state_date", "available_date"]
+    )
+    assert np.array_equal(
+        dates.get_indexer(delayed.available_date) - dates.get_indexer(delayed.state_date),
+        delayed.lag.to_numpy(),
+    )
+    daily = scores[scores.asset != "BASKET"].groupby(["date", "method"]).loss.mean().unstack()
+    summary = pd.read_csv(RESULTS / "calibration_comparison.csv")
+    for row in summary.query('endpoint=="Eight-asset mean"').itertuples():
+        assert abs((daily[row.contrast] - daily["Slow EWMA"]).mean() - row.estimate) < 1e-10
+    assert len(daily) == len(r) - warm + 1 - h
+    burden = pd.read_csv(RESULTS / "review_burden.csv").set_index("method")
+    for method in burden.index:
+        assert int(signal[method].sum()) == int(burden.loc[method, "alarms"])
+    print("Independent target, timing, risk-matrix, reset, headline and provenance checks passed.")
 
 
-def main():
+if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--public", action="store_true")
     args = p.parse_args()
     public_checks()
     if not args.public:
         independent_checks()
-
-
-if __name__ == "__main__":
-    main()

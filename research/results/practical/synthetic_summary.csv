@@ -1,0 +1,13 @@
+case,threshold,paths,prechange_alarm_rate,any_alarm_rate,hit_by_60,conditional_median_delay
+Stationary,1.3,100,0.0,0.0,0.0,
+Stationary,1.5,100,0.0,0.0,0.0,
+Stationary,1.7,100,0.0,0.0,0.0,
+Abrupt volatility,1.3,100,0.0,0.36,0.36,8.0
+Abrupt volatility,1.5,100,0.0,0.0,0.0,
+Abrupt volatility,1.7,100,0.0,0.0,0.0,
+Gradual volatility,1.3,100,0.0,0.0,0.0,
+Gradual volatility,1.5,100,0.0,0.0,0.0,
+Gradual volatility,1.7,100,0.0,0.0,0.0,
+Correlation only,1.3,100,0.0,0.03,0.0,
+Correlation only,1.5,100,0.0,0.0,0.0,
+Correlation only,1.7,100,0.0,0.0,0.0,

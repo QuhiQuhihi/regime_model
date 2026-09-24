@@ -1,0 +1,29 @@
+{
+  "as_of": "2026-09-21",
+  "p_stressed": 1.0985705467320733e-05,
+  "state": "Active",
+  "state_probabilities": {
+    "Quiet": 2.651622722834623e-06,
+    "Active": 0.9999863626718102,
+    "Stressed": 1.0985705467320733e-05
+  },
+  "normalized_entropy": 0.0001575895472014,
+  "fast_slow_risk_ratio": 0.970405955954301,
+  "equity_bond_correlation_63": 0.36021221137002285,
+  "asset_return_63_sessions": {
+    "US equities": 0.04168610628613978,
+    "Developed ex-US equities": 0.01482114548885849,
+    "Emerging-market equities": -0.03342223401231448,
+    "Intermediate Treasuries": -0.020272542575807795,
+    "Long Treasuries": -0.038811462554026344,
+    "Investment-grade credit": -0.022241757006168927,
+    "Gold": 0.03585638907988242,
+    "Broad commodities": 0.18861736637808524
+  },
+  "last_alarms": {
+    "Observable reset": "2020-03-10",
+    "HMM reset": "2026-05-04"
+  },
+  "proposed_action": "Review short-window risk estimates and current cross-asset relationships; no automatic alpha-model change.",
+  "sample_status": "Historical replay, revised adjusted-close data; not a streaming service."
+}

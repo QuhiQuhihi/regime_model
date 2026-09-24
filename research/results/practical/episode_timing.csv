@@ -1,0 +1,23 @@
+reference_date,method,alarm_date,lag_sessions,hmm_stress_at_reference,sessions_since_latest_alarm
+2008-09-18,Observable reset,,,True,
+2010-05-21,Observable reset,,,False,
+2011-08-08,Observable reset,,,False,
+2013-06-21,Observable reset,,,False,
+2014-12-24,Observable reset,,,False,
+2019-08-22,Observable reset,,,True,
+2020-03-09,Observable reset,2020-03-10,1.0,True,
+2021-03-19,Observable reset,,,False,259.0
+2022-03-03,Observable reset,,,False,500.0
+2025-04-10,Observable reset,,,False,1279.0
+2026-03-24,Observable reset,,,True,1517.0
+2008-09-18,HMM reset,,,True,75.0
+2010-05-21,HMM reset,,,False,242.0
+2011-08-08,HMM reset,2011-08-02,-4.0,False,4.0
+2013-06-21,HMM reset,,,False,451.0
+2014-12-24,HMM reset,2015-02-03,26.0,False,832.0
+2019-08-22,HMM reset,2019-09-04,8.0,True,44.0
+2020-03-09,HMM reset,2020-03-02,-5.0,True,5.0
+2021-03-19,HMM reset,,,False,265.0
+2022-03-03,HMM reset,2022-04-04,22.0,False,506.0
+2025-04-10,HMM reset,2025-04-23,8.0,False,170.0
+2026-03-24,HMM reset,2026-03-19,-3.0,True,3.0

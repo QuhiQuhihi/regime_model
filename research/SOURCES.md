@@ -36,3 +36,41 @@ computed before this refresh. This is not an independent before/after strategy e
 Contribution: timestamped causal forecasts and decision paths, matched EWMA comparison,
 future-perturbation tests, convergence/fallback accounting and explicit retrospective revisions.
 No unsupervised state is treated as a verified economic recession label.
+
+## Practical multi-asset extension — 24 September 2026
+
+The new [practical manifest](data/practical_manifest.json) records eight separate
+Yahoo adjusted-close snapshots retrieved on 24 September UTC: 5,172 prices per fund,
+1 March 2006–21 September 2026. All use the same observed XNYS sessions, with zero
+missing values and zero fills. A longer EFA request and a targeted retry both lacked
+22 September; the common cutoff was shortened before model evaluation. Earlier
+SPY/TLT vintages are retained separately. The new
+[data audit](results/practical/data_audit.json) records extreme returns and unchanged
+prices. Retrieval timestamps are not point-in-time release evidence.
+
+Current sources reviewed for this extension:
+
+- [Official yfinance history API](https://ranaroussi.github.io/yfinance/reference/api/yfinance.Ticker.history.html): acquisition interface. The locked local version is recorded per snapshot.
+- [hmmlearn API](https://hmmlearn.readthedocs.io/en/stable/api.html): Gaussian emissions, transition probabilities, convergence and the difference between posterior smoothing and a forward update. Fixed-lag smoothing is implemented explicitly and checked against enumeration.
+- [Two Sigma: A Machine Learning Approach to Regime Modeling](https://www.twosigma.com/articles/a-machine-learning-approach-to-regime-modeling/): motivation for using multi-asset regimes in research. This project's ETF sample, review rule and calibration results are its own experiment, not a replication of that article.
+- [Hallac, Nystrup and Boyd: Greedy Gaussian Segmentation](https://web.stanford.edu/~boyd/papers/ggs.html): attribution for the original segmentation topic. The original simplified splitter remains in the baseline; it is not represented as the new monitoring detector.
+
+New contributions are the eight-asset historical replay, dated immediate/delayed labels,
+explicit reset policy, matched continuous-update controls, review-burden accounting and
+original visualizations. Synthetic paths are separately identified, never substituted
+for market data. The assets remain surviving fund proxies; adjusted prices, distributions,
+underlying-market timing and provider revisions limit interpretation. Raw prices, daily
+signals and forecast panels are excluded from publication; aggregate evidence and original
+figures do not establish unrestricted rights to redistribute the source datasets.
+
+The maintained feature representation is described in
+[the dated design amendment](feature_design_20260924.md). It was introduced after the
+raw-return replay showed frequent state changes. That observation motivates a
+research-oriented description; it does not provide independent validation of the new
+representation. Four smoothed risk features and one dependence feature remain derived
+from the same observed market data. The original raw-return calibration policy is kept
+as a matched-period control, and the initial evaluation tables are preserved separately.
+
+The final September 2026 monthly summary is partial through 21 September. A month-end
+index in `monthly_monitor.csv` denotes the aggregation period, not an observation or
+availability date after the source cutoff.

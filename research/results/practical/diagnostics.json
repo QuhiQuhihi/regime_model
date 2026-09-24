@@ -1,0 +1,13 @@
+{
+  "hmm_refits": 220,
+  "representation": "EWMA risk levels and equity-bond dependence",
+  "calibration_warmup": 567,
+  "label_switch_fraction": 0.0317115551694179,
+  "raw_return_failed_refits": 0,
+  "failed_primary_refits": 0,
+  "first_decision": "2008-06-02",
+  "last_decision": "2026-09-21",
+  "first_scored_outcome": "2008-06-03",
+  "last_scored_outcome": "2026-09-21",
+  "sessions_scored": 4600
+}

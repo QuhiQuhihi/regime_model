@@ -28,3 +28,48 @@ The maintained Git tree omits raw vendor histories, ignored recovery material, e
 caches. Historical credential/rights boundaries remain in [publication review](../PUBLICATION.md).
 
 Final Git review: original `old` reference verified; maintained Markdown links resolve within the staged tree. Tracked evidence hashes match staged bytes, and raw/recovery/environment paths are absent. `.gitattributes` preserves Linux source line endings and exact hashed CSV serializer bytes. Staged whitespace checks pass.
+
+## Practical research redesign — 24 September 2026
+
+User requested fast regime recognition for model recalibration, useful retrospective
+views, historical backtests beyond US equities, and stronger visual storytelling.
+Starting clean main: 4c0164e. Preserved as before-practical-regimes-20260924; old remains
+ef792c6. Active branch practical-regimes-20260924. Prior forecast result remains a
+baseline, not the definition of usefulness for every regime application.
+
+Outputs: research/results/practical/, research/figures/practical/, study.ipynb.
+Private downloaded prices and daily paths remain ignored. Per-asset acquisition and
+model configurations checkpoint with input/code/settings hashes. Restart acquisition
+with uv run python research/practical_data.py --download, study with uv run python
+research/run_study.py, notebook with uv run python research/build_notebook.py.
+Expected numerical work: a few minutes for monthly HMM fits and bounded sensitivities;
+notebook uses verified cached fits, and is replaced only after successful execution.
+
+## Completed practical study — 24 September 2026
+
+- Eight Yahoo adjusted-close series acquired from March 2006. EFA lacks 22 September
+  in both broad and targeted requests; before evaluation the common cutoff moved to
+  21 September. All eight final snapshots have 5,172 prices and complete XNYS sessions.
+- The initial raw-return HMM changes labels on 55.5% of adjacent dates. The dated
+  feature amendment introduces smoothed asset-group risk levels and stock–bond
+  dependence for a more useful research description. Initial tables remain under
+  `initial_raw_return_*.csv`, and the raw-return reset is retained on matched dates.
+- Feature model: 220 monthly fits, zero failures; 4,600 scored forecast dates.
+  Matched-date label switching is 3.2% versus 55.3% for raw returns; 26 review alarms.
+  HMM-reset mean loss difference versus slow EWMA is -0.000457, pointwise paired
+  95% interval [-0.024880, +0.016732]. Descriptive stability is not forecast superiority.
+- The 2008 event check distinguishes an existing stressed state from a new alert.
+  This avoids interpreting a missing fresh review as failure to recognize existing risk.
+- Locked environment sync, nine tests, lint and formatting pass. Notebook executes
+  in a fresh kernel: 18 code cells, nine embedded original figures, no errors.
+  Independent checks reconcile every forward target, forecast matrix diagonal,
+  basket risk, reset date and reported headline, alongside provenance hashes.
+- Browser inspection at 1440 px and 390 px: all nine figures load, no JavaScript or
+  math errors, mobile document width 390 px. Screenshots and browser evidence are in
+  `/tmp/regime-practical-review`; the local HTML is `research/preview/study.html`.
+
+Current main reading path: README → research chapters → study.ipynb. Reproduction
+instructions moved to docs/05-reproduction.md so the introduction leads with research.
+The final notebook reruns the maintained pipeline with verified HMM checkpoints. Raw
+prices and daily panels remain local and ignored; public summaries retain sensitivity,
+revision and synthetic-detection findings including poor or inconclusive outcomes.

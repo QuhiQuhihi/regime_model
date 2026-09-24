@@ -1,60 +1,121 @@
-# Description, detection, and forecasting are different tasks
+# A regime is a reason to revisit a model
 
-A historical color map can organize market behavior even when it cannot improve a decision.
-The study therefore asks the forecast question first. SPY represents equity risk; TLT adds a
-rate-sensitive asset that may distinguish equity stress from joint stock/bond shocks.
+A researcher rarely needs the exact date of an unobservable structural break. The
+more immediate questions are whether the current calibration still represents the
+market, which exposures changed, and whether the evidence justifies a review now.
+This project treats regime modeling as a way to answer those questions.
 
-## What each model knows
+## Read risk, direction and dependence together
 
-A Gaussian mixture treats observations as iid draws from several Gaussian components. Its
-posterior classifies the current observation; its next-observation distribution still uses
-mixture weights. A hidden Markov model adds transition probabilities A_ij. It can carry a
-persistent state belief from one date into the next.
+The same high-volatility label can cover rising commodities, falling equities, or a
+market in which both stocks and bonds decline. A three-state model cannot compress
+all these distinctions into one useful word. The research therefore combines:
 
-At a monthly refit, 504 trailing observations determine scaling, component parameters and
-state order. High risk means a higher fitted SPY second moment, not recession status. Models
-learn from earlier evaluation observations as time advances, but never from future ones.
-Between refits, the HMM uses one forward update:
+| Lens | What it describes | Research use |
+| --- | --- | --- |
+| Broad risk state | Quiet, active or stressed return distributions across eight assets | Revisit volatility estimates and scenario severity |
+| Direction | Trailing quarterly equity and Treasury returns | Distinguish defensive bonds from simultaneous stock/bond weakness |
+| Dependence | Rolling equity–bond correlation | Revisit hedge assumptions and covariance calibration |
 
-alpha_t(j) proportional to f_j(x_t) sum_i alpha_(t-1)(i) A_ij.
+![Direction and dependence](../research/figures/practical/market_context.png)
 
-Normalize in log space, then next-state probabilities are alpha_t A. The forecast is the
-probability-weighted sum of state variance plus squared state mean, mapped back to decimal
-SPY return units. The known-parameter test enumerates every short hidden-state path and
-compares the exact posterior with the recursion. Future perturbations must leave saved
-forecast prefixes unchanged.
+These are measured descriptions, not economic causes. A change in correlation does
+not tell us why the relationship changed; it does tell us which model assumption
+needs inspection. A low-volatility state need not mean attractive expected returns.
 
-Full-sequence library posterior/decoding methods can use future observations. Here they are
-confined to retrospective diagnostics. Comparing those descriptions with archived filters
-shows how appealing historical labels can revise. No state is independently labeled a recession.
+## The market panel
 
-## The forecast contest
+| Exposure | Historical proxy | What the label leaves out |
+| --- | --- | --- |
+| US equities | SPY | Large-cap US equity exposure |
+| Developed ex-US equities | EFA | USD returns include currency and asynchronous underlying closes |
+| Emerging-market equities | EEM | A changing country/sector composition |
+| Intermediate Treasuries | IEF | Duration exposure rather than a cash rate |
+| Long Treasuries | TLT | Greater duration sensitivity |
+| Investment-grade credit | LQD | Both rates and credit-spread exposure; not pure credit risk |
+| Gold | GLD | A specific fund's adjusted-price proxy |
+| Broad commodities | DBC | Futures exposure and roll effects, not a spot commodity basket |
 
-The target is next-session squared SPY return. EWMA uses decay .94; a single-state trailing
-second moment is another baseline. Loss is log(v)+r_next^2/v, with positive forecast floor
-1e-8. Pairwise differences matter; the log term means negative loss levels are normal.
-Daily squared returns are noisy risk proxies, not measured latent conditional volatility.
-The primary HMM/EWMA contrast uses 428 late-segment forecasts through 17 September 2026.
+All eight use the same observed US sessions from March 2006 through 21 September 2026.
+The common history starts after the newest fund's inception. Prices are adjusted by
+the provider; splits/distributions are not added again. The final cutoff avoids a
+missing EFA session on 22 September. No interpolated or carried-forward prices are used.
 
-HMM's `min_covar` is an initialization floor in the installed implementation, while GMM's
-`reg_covar` adds diagonal regularization. The floor sensitivity records these exact API
-settings; it is not a promise that every fitted HMM variance is bounded by that number.
-Reaching an EM iteration limit alone does not pass convergence; the last likelihood gain
-and finite positive covariances are checked. Failed fits explicitly use EWMA.
+## Immediate recognition: a probabilistic state
 
-## A decision requires another timing assumption
+The maintained HMM reads five features: fast log-risk levels for equities,
+Treasuries, credit and real assets, plus a slower equity–bond dependence estimate.
+These features describe a changing market distribution rather than the sign of one
+noisy return. Risk levels use EWMA decay .90; the dependence proxy uses .97. The
+[feature design](../research/feature_design_20260924.md) states the exact transformations.
 
-The overlay maps high-risk probability p to SPY weight 1-.75p. It trades one session after
-observation and first earns the next return, so its executable horizon differs from the
-one-step forecast score. A static .625 control and capped 10%-volatility EWMA rule make
-exposure reductions visible. All use exact self-financing costs and zero assumed cash interest.
+Every month, fit three Gaussian states on the last 504 feature observations, with
+training-only standardization. A 63-return initialization gives all calibration
+comparisons a common 567-return warmup. Rank states by their average standardized
+log-risk level: quiet, active and stressed. The first daily-return HMM remains a
+benchmark; its frequent label changes motivated this exploratory representation change.
 
-## Change points with known truth
+For state j, the end-of-day update is:
 
-The independent greedy Gaussian splitter optimizes one mean/variance likelihood break at a
-time; it omits the original GGS breakpoint refinement and multivariate optimization. Market
-splits are retrospective. An expanding-prefix synthetic alarm records detection date separately
-from estimated breakpoint; 50 null and 50 variance-break paths quantify false alarms and delay.
-The artificial 3x volatility jump is an algorithm check, not market ground truth.
+$$
+\alpha_t(j)\propto f_j(r_t)\sum_i\alpha_{t-1}(i)A_{ij}.
+$$
 
-[Forecast and decision results](02-results.md) · [Frozen settings and caveats](../research/PROTOCOL.md).
+The transition matrix supplies persistence, while today's observation can move the
+posterior immediately. State names follow the average fitted log-risk level
+across the four asset groups: quiet, active and stressed. The ranking is recalculated at each refit;
+these are relative risk labels, not permanent economic identities or recession calls.
+
+A probability vector is more informative than its largest element. When two states
+have similar probabilities, the researcher should inspect the transition rather than
+treat the color of a chart as certainty. Normalized entropy ranges from zero for a
+concentrated posterior to one for equal probabilities.
+
+Training-smoothed state weights estimate conditional raw-return second moments.
+The supporting HMM risk forecast averages those state-weighted second moments at horizons
+one through five, using the corresponding powers of the fitted transition matrix.
+It answers a forecasting question distinct from using the current state as a review
+trigger. Failed refits retain the last valid model; the run records every failure.
+
+## A deliberate use of hindsight
+
+Full-history smoothing is useful for organizing a crisis, describing state-dependent
+relationships and selecting examples to study. It need not pass a trading backtest to
+serve those purposes. Its limitation is specific: the final historical label cannot
+be credited with triggering a decision before that label existed.
+
+Fixed-lag smoothing offers an intermediate choice. At today's close, revisit the state
+five or twenty sessions ago using all observations now available. Extra observations
+can clarify an ambiguous transition; monthly parameter refits can also change it.
+Keep two dates: **the day described** and **the day the revised estimate is available**.
+
+This accommodates the researcher's willingness to accept a revised history. The
+[revision chart](02-results.md#allowing-a-short-delay-changes-the-label) measures what
+that choice changes. Full-history agreement measures similarity to a final description,
+not accuracy against a known true state.
+
+## A defined action after an alert
+
+A high state is a level; a review alert is an event. The HMM alert requires stressed
+probability above 70% for two observations. The observable alert requires the median
+fast/slow volatility ratio across eight assets above 1.5 twice. Both must re-arm after
+falling below their threshold, and cannot produce reviews less than 21 sessions apart.
+The 1.5 ratio is deliberately conservative; its looser 1.3 alternative is reported.
+
+For the backtest, a review has a specific consequence: replace the current second-moment
+matrix with the last 20 daily return outer products, then use faster exponential
+updating for 21 sessions. This is a calibration policy, not a prediction that risky
+assets must fall. The [playbook](04-calibration-playbook.md) explains how a researcher
+can use the alert without automatically rebuilding every model.
+
+The feature HMM includes a stock–bond dependence input, while the simple volatility
+alarm cannot reliably recognize a pure correlation shift. The separate relationship
+panel makes that distinction visible. The synthetic diagnostic specifically tests
+the observable volatility detector, not the HMM's correlation sensitivity.
+
+Smoothing the inputs trades some reaction speed for a more persistent description.
+Overlapping features also weaken the HMM's conditional-independence approximation.
+Its posterior can be overly concentrated: a 99% model-implied probability is not a
+validated 99% chance that an objectively true economic regime exists.
+
+[Results](02-results.md) · [Full settings](../research/PROTOCOL.md) · [Sources](../research/SOURCES.md).

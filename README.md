@@ -1,36 +1,72 @@
-# Causal market states and next-session risk forecasts
+# Market regimes for faster research decisions
 
-Through 2026-09-17, the late-segment two-state HMM minus EWMA mean next-session risk loss is **+0.2539**, with paired 95% block interval **[-0.1024, +0.8795]**. Negative favors HMM. The result does not establish incremental forecasting value, and does not establish general regime-prediction ability.
+**Recognize a changing market, understand what changed, and decide what to recalibrate.**
+A regime model can help a researcher shorten a calibration window, revisit correlations,
+separate stress episodes, or test whether a model still describes its inputs. Predicting
+a profitable trade is only one possible use.
 
-Historical adjusted-close data are refreshed through **17 September 2026**; September is partial and the evaluation is retrospective. The contribution is a validated, inspectable comparison with explicit limitations. Original code and notebooks are preserved on branch `old`; the maintained revision is on `renovation`.
+This project combines immediate recognition, delayed confirmation and retrospective
+interpretation using a feature-based HMM across **US and international equities, Treasuries, corporate credit,
+gold and commodities**. The historical study spans **March 2006–21 September 2026**.
+Charts use asset names so the economic picture comes before the tickers.
 
-## Read the study
+![Eight-asset market atlas](research/figures/practical/market_atlas.png)
 
-- [Executed notebook](study.ipynb): methods, calculations, original figures and independent checks.
-- [Inputs and methods](docs/01-methods.md) → [results and implications](docs/02-results.md).
-- [Audit](research/AUDIT.md), [protocol](research/PROTOCOL.md), [sources](research/SOURCES.md), [next unrun experiment](research/RESEARCH_AGENDA.md).
+## Explore the research
 
-![Primary evidence](research/figures/forecast_comparison.png)
+| Research question | Read and inspect |
+| --- | --- |
+| What kind of regime has changed: risk, direction, or dependence? | [Three complementary lenses](docs/01-methods.md) |
+| How did the signals behave in 2008–09, 2020, 2022 and 2025? | [Historical replay lab](docs/03-historical-replays.md) |
+| Does a prompt alert improve the next calibration? | [Backtest, benchmarks and results](docs/02-results.md) |
+| What should I actually do after an alert? | [Researcher's calibration playbook](docs/04-calibration-playbook.md) |
+| How much does waiting five or twenty sessions change the description? | [Delayed labels and revisions](docs/02-results.md#allowing-a-short-delay-changes-the-label) |
+| Where are the calculations and all figures? | [Executed research notebook](study.ipynb) |
 
-## Reproduce in WSL/Linux
+## What a researcher gains
 
-Use Python 3.12 and the committed uv lockfile. Run from this repository:
+- A persistent map: labels change on **3.2%** of sessions,
+  versus **55.3%** for the daily-return HMM.
+- A dated review process: **26 confirmed HMM alerts**, with event replays
+  showing what had already happened when each alert became available.
+- A deliberate hindsight option: five- and twenty-session revised labels for event
+  studies and calibration samples, alongside their original real-time descriptions.
+- An actual calibration backtest: keep continuous risk updating in view, because a
+  more stable regime map has not established better risk forecasts.
 
-```bash
-uv sync --locked
-uv run python research/acquire.py --download
-uv run python -m pytest -q
-uv run python research/run_study.py
-uv run python research/build_notebook.py
-uv run python research/check_artifacts.py
-uv run python -m ruff check research tests
-uv run python -m ruff format --check research tests
-```
+## The concrete experiment
 
-The first acquisition downloads only missing snapshots and checks pinned hashes. A revised vendor history fails clearly; restore the matching permitted cache rather than bypassing hashes. For cached/offline reproduction use `uv run --offline python research/acquire.py` followed by the remaining commands without `--download`. To import an existing permitted cache use `uv run python research/acquire.py --from-cache /path/to/cache`. An explicit later refresh uses `uv run python research/refresh_sources.py --end YYYY-MM-DD` (exclusive end, completed sessions only); retain the old manifest, amend the protocol and rerun all artifacts before changing claims.
+Each confirmed alert resets a risk estimator to the latest 20 sessions and makes it
+adapt faster for one month. Compare this with continuously slow and fast updating.
+Score the following five sessions across eight assets, alongside review frequency,
+missed reference episodes and the effect of delayed labels.
 
-## Repository and validation boundary
+Across **4,600 matched forecast dates**, the feature-HMM reset's mean
+loss difference versus slow EWMA is **-0.0005 (95% interval [-0.0249, +0.0167])**. Its advantage is
+negligible and uncertain. The [results chapter](docs/02-results.md) shows the full
+comparisons with fast updating, the raw-return model and direct state forecasts.
 
-`research/` contains reusable model, data, evaluation and reporting code. Summary evidence is under `research/results/`, figures under `research/figures/`, and tests under `tests/`. Detailed empirical paths and raw snapshots are local and ignored where provider rights remain unresolved. `research/WORKLOG.md` records recovery commands and actual verification. The report is saved only after complete fresh-kernel execution.
+![Calibration evidence](research/figures/practical/calibration_comparison.png)
 
-CI runs locked setup, known-answer/timing/accounting tests and public-file checks; it does not certify market data, transaction execution or the complete historical analysis. See [publication review](PUBLICATION.md) for current-file and historical-data limits. No remote push or live publication was performed.
+The HMM rule produces **1.42 review alerts per year**;
+the conservative observable rule produces **0.05**.
+The feature-based HMM describes smoothed risk levels and stock–bond dependence;
+the raw-return HMM is retained as a benchmark. Five-session delayed labels revise **8.5%** of
+original classifications. The result should be read alongside its interval, subperiods and state-count sensitivity. The observable threshold is too
+conservative for a general early-warning role: it produces just one historical alert.
+
+## Read the evidence in the right time frame
+
+A label available at today's close can prompt a review. A label confirmed five sessions
+later can improve an event study or a calibration sample. A full-history map can organize
+past markets. All three are useful; the notebook shows the waiting time rather than
+silently treating every label as an immediate forecast.
+
+This is a retrospective calibration backtest on revised adjusted prices and a fixed
+surviving ETF universe. It does not claim pristine out-of-sample validation, executable
+strategy returns or known true regime dates. The previous narrow SPY forecast comparison
+remains [preserved at its original revision](https://github.com/QuhiQuhihi/regime_model/tree/4c0164ea5a114d865b45bd4b48f40ce72954a7c4);
+its inconclusive result is not erased by this broader research question.
+
+[Reproduction and input access](docs/05-reproduction.md) · [Sources](research/SOURCES.md) ·
+[Protocol](research/PROTOCOL.md) · [Publication boundaries](PUBLICATION.md).
