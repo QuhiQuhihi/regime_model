@@ -3,6 +3,7 @@
 import json
 import pandas as pd
 from research.common import table
+from research.landing_figure import write_stress_history
 from research.practical_config import ROOT, RESULTS
 
 
@@ -168,77 +169,80 @@ probability vector, asset-direction context and last review dates.
 [Researcher's playbook](04-calibration-playbook.md) · [Exact protocol](../research/PROTOCOL.md).
 """
     (ROOT / "docs/02-results.md").write_text(results)
-    readme = f"""# Market regimes for faster research decisions
+    write_stress_history()
+    switch_rate = representations.set_index("representation").label_switch_fraction
+    reset = main.loc["HMM reset"]
+    readme = rf"""# Detecting market regimes with a hidden Markov model
 
-**Recognize a changing market, understand what changed, and decide what to recalibrate.**
-A regime model can help a researcher shorten a calibration window, revisit correlations,
-separate stress episodes, or test whether a model still describes its inputs. Predicting
-a profitable trade is only one possible use.
+At each market close, a three-state Gaussian hidden Markov model (HMM) uses returns
+from eight ETFs to estimate the probability of a **quiet, active, or stressed** market. Can those
+probabilities tell a researcher when to recalibrate risk?
 
-This project combines immediate recognition, delayed confirmation and retrospective
-interpretation using a feature-based HMM across **US and international equities, Treasuries, corporate credit,
-gold and commodities**. The historical study spans **March 2006–21 September 2026**.
-Charts use asset names so the economic picture comes before the tickers.
+Feeding the model risk levels and stock–bond dependence cut the share of sessions
+with a label change from **{switch_rate["Daily returns"]:.1%}** with daily returns to
+**{switch_rate["Risk and dependence features"]:.1%}**. The steadier signal triggered
+**{int(burden.loc["HMM reset", "alarms"])} reviews**. Resetting risk estimates at those
+reviews had little effect on average forecast loss.
 
-![Eight-asset market atlas](research/figures/practical/market_atlas.png)
+![Monthly average of the model's daily stressed-state probability from June 2008 through September 2026](docs/figures/stress-history.png)
 
-## Explore the research
+In February 2020 the model assigned about 5% probability to stress on average.
+In March that average rose to nearly 100%. The chart summarizes daily estimates
+available at each close. [Monthly data](research/results/practical/monthly_monitor.csv) · [Daily replay examples](docs/03-historical-replays.md)
 
-| Research question | Read and inspect |
-| --- | --- |
-| What kind of regime has changed: risk, direction, or dependence? | [Three complementary lenses](docs/01-methods.md) |
-| How did the signals behave in 2008–09, 2020, 2022 and 2025? | [Historical replay lab](docs/03-historical-replays.md) |
-| Does a prompt alert improve the next calibration? | [Backtest, benchmarks and results](docs/02-results.md) |
-| What should I actually do after an alert? | [Researcher's calibration playbook](docs/04-calibration-playbook.md) |
-| How much does waiting five or twenty sessions change the description? | [Delayed labels and revisions](docs/02-results.md#allowing-a-short-delay-changes-the-label) |
-| Where are the calculations and all figures? | [Executed research notebook](study.ipynb) |
+## How the model assigns a regime
 
-## What a researcher gains
+**1. Measure risk and dependence.** Let $r_t$ be the vector of daily returns for
+SPY, EFA, EEM, IEF, TLT, LQD, GLD, and DBC. Update the matrix of return second
+moments with an exponentially weighted moving average (EWMA).
 
-- A persistent map: labels change on **{representations.iloc[1].label_switch_fraction:.1%}** of sessions,
-  versus **{representations.iloc[0].label_switch_fraction:.1%}** for the daily-return HMM.
-- A dated review process: **{int(burden.loc["HMM reset", "alarms"])} confirmed HMM alerts**, with event replays
-  showing what had already happened when each alert became available.
-- A deliberate hindsight option: five- and twenty-session revised labels for event
-  studies and calibration samples, alongside their original real-time descriptions.
-- An actual calibration backtest: keep continuous risk updating in view, because a
-  more stable regime map has not established better risk forecasts.
+$$
+M_t(\lambda)=\lambda M_{{t-1}}(\lambda)+(1-\lambda)r_t r_t^\top
+$$
 
-## The concrete experiment
+With $\lambda=0.90$, take half the log of the mean diagonal entry within each
+group to get four risk features (equities, Treasuries, credit, and real assets).
+With $\lambda=0.97$, divide the SPY–TLT cross-moment by the product of their
+root-mean-square returns, clip to $\pm 0.95$, and apply the Fisher transform. That gives the fifth feature.
 
-Each confirmed alert resets a risk estimator to the latest 20 sessions and makes it
-adapt faster for one month. Compare this with continuously slow and fast updating.
-Score the following five sessions across eight assets, alongside review frequency,
-missed reference episodes and the effect of delayed labels.
+**2. Fit three states and update them at each close.** Each month, fit a
+diagonal-Gaussian HMM on the latest 504 feature observations. Standardize inputs
+using that window and rank the states by their mean standardized level across the
+four risk features. For today's standardized vector $x_t$, the filtered probability is
 
-Across **{diag["sessions_scored"]:,} matched forecast dates**, the feature-HMM reset's mean
-loss difference versus slow EWMA is **{estimate("HMM reset")}**. Its advantage is
-negligible and uncertain. The [results chapter](docs/02-results.md) shows the full
-comparisons with fast updating, the raw-return model and direct state forecasts.
+$$
+\alpha_t(j) \propto \mathcal{{N}}(x_t\mid\mu_j,D_j)\sum_{{i=1}}^3 \alpha_{{t-1}}(i) A_{{ij}}
+$$
 
-![Calibration evidence](research/figures/practical/calibration_comparison.png)
+$A_{{ij}}$ is the fitted probability of moving from state $i$ to state $j$.
+The Gaussian density measures how well today's features fit state $j$.
+Normalize across the three states and use the most probable one as the day's label.
+[Feature construction and replay code](research/feature_regimes.py)
 
-The HMM rule produces **{burden.loc["HMM reset", "alarms_per_year"]:.2f} review alerts per year**;
-the conservative observable rule produces **{burden.loc["Observable reset", "alarms_per_year"]:.2f}**.
-The feature-based HMM describes smoothed risk levels and stock–bond dependence;
-the raw-return HMM is retained as a benchmark. Five-session delayed labels revise **{revision.loc["lag5", "changed_from_original"]:.1%}** of
-original classifications. The result should be read alongside its interval, subperiods and state-count sensitivity. The observable threshold is too
-conservative for a general early-warning role: it produces just one historical alert.
+**3. Turn a stress signal into a review.** Two consecutive closes above 70% stressed
+probability trigger a reset to the mean of the latest 20 daily return outer products.
+For the next 21 updates, use fast EWMA (0.90), then resume slow EWMA (0.97).
+Another alert requires the signal to first fall to 70% or below and at least 21
+sessions to pass since the previous alert. [Alert and calibration code](research/practical_models.py)
 
-## Read the evidence in the right time frame
+## Did the reset improve the next five sessions' risk estimate?
 
-A label available at today's close can prompt a review. A label confirmed five sessions
-later can improve an event study or a calibration sample. A full-history map can organize
-past markets. All three are useful; the notebook shows the waiting time rather than
-silently treating every label as an immediate forecast.
+Across **{diag["sessions_scored"]:,} matched forecast dates**, the reset changed mean loss by
+**{reset.estimate:+.4f}** versus continuous slow EWMA. Its 95% interval
+**[{reset.lower95:+.4f}, {reset.upper95:+.4f}]** spans zero. The data are consistent
+with either a modest improvement or a modest deterioration in calibration.
 
-This is a retrospective calibration backtest on revised adjusted prices and a fixed
-surviving ETF universe. It does not claim pristine out-of-sample validation, executable
-strategy returns or known true regime dates. The previous narrow SPY forecast comparison
-remains [preserved at its original revision](https://github.com/QuhiQuhihi/regime_model/tree/4c0164ea5a114d865b45bd4b48f40ce72954a7c4);
-its inconclusive result is not erased by this broader research question.
+![Loss differences versus slow EWMA for three calibration rules, with 95% intervals and a breakdown by asset](research/figures/practical/calibration_comparison.png)
 
-[Reproduction and input access](docs/05-reproduction.md) · [Sources](research/SOURCES.md) ·
-[Protocol](research/PROTOCOL.md) · [Publication boundaries](PUBLICATION.md).
+For each asset, score the second-moment forecast $v$ against the next five sessions'
+mean squared return $y$ using $L(v,y)=\log(v)+y/v$. Average the loss equally across
+assets. Negative differences favor the alternative rule. Intervals use 2,000 paired
+block-bootstrap draws with 63-session blocks. [Result table](research/results/practical/calibration_comparison.csv)
+
+The retrospective sample uses revised adjusted prices for eight surviving ETFs from
+March 2006 through 21 September 2026. The feature design followed inspection of
+the daily-return model on this same history. [Study protocol](research/PROTOCOL.md) · [Data sources](research/SOURCES.md) · [Publication notes](PUBLICATION.md)
+
+[Executed notebook](study.ipynb) · [Methods](docs/01-methods.md) · [Full results](docs/02-results.md) · [Calibration playbook](docs/04-calibration-playbook.md) · [Reproduce the study](docs/05-reproduction.md)
 """
     (ROOT / "README.md").write_text(readme)
