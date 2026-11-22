@@ -33,7 +33,10 @@ The study runner also applies the portfolio rule to its daily filtered states. T
 replay just that calculation from a matching local archive, run the two commands
 below. The first verifies the pinned SPY prices and daily state file against the
 study manifests, then writes the two summary CSVs in `docs/figures/`. The second
-redraws the README charts from the public summaries and also works in a fresh checkout.
+redraws the portfolio chart from those summaries and the archived daily labels.
+Each background band begins at the close when the filtered label changes and ends
+at the next change or the final observation. The rendered chart is included in a
+fresh checkout.
 
 ```bash
 uv run python -m research.landing_backtest

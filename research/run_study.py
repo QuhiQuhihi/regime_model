@@ -187,9 +187,11 @@ def main():
         reference,
     )
     from research.landing_backtest import write_landing_backtest
+    from research.landing_figure import write_spy_wealth
     from research.practical_report import write_report
 
     write_landing_backtest(prices["SPY"], states["p_high"])
+    write_spy_wealth(states["label"])
     write_report()
     write_metadata()
     print(

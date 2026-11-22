@@ -3,7 +3,7 @@
 import json
 import pandas as pd
 from research.common import table
-from research.landing_figure import write_spy_wealth, write_stress_history
+from research.landing_figure import write_stress_history
 from research.practical_config import ROOT, RESULTS
 
 
@@ -170,7 +170,6 @@ probability vector, asset-direction context and last review dates.
 """
     (ROOT / "docs/02-results.md").write_text(results)
     write_stress_history()
-    write_spy_wealth()
     portfolio = pd.read_csv(ROOT / "docs/figures/spy-performance.csv", index_col="strategy")
     regime, spy = portfolio.loc["regime"], portfolio.loc["spy"]
     switch_rate = representations.set_index("representation").label_switch_fraction
@@ -181,7 +180,12 @@ What happened to a stock portfolio that cut its exposure when markets looked str
 backtest uses a three-state hidden Markov model (HMM) across eight ETFs to size a
 position in **SPY**, the ETF tracking the S&P 500.
 
-![Growth of $100 from June 2008 to September 2026 for the regime allocation, buy-and-hold SPY, and a fixed 62.5% SPY allocation](docs/figures/spy-backtest.png)
+![Growth of $100 in three SPY portfolios, June 2008–September 2026, with blue, gold, and rose bands for quiet, active, and stressed markets](docs/figures/spy-backtest.png)
+
+Blue, gold, and rose bands mark the model’s **quiet**, **active**, and **stressed**
+classifications at each daily close. For example,
+the HMM switched from active to stressed on 28 February 2020 and back to active
+on 1 July.
 
 **The regime allocation gave up some growth for a shallower drawdown.**
 An initial \$100 grew to **\${regime.terminal_wealth:,.0f}** with the model and

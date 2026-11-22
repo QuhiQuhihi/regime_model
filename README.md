@@ -4,7 +4,12 @@ What happened to a stock portfolio that cut its exposure when markets looked str
 backtest uses a three-state hidden Markov model (HMM) across eight ETFs to size a
 position in **SPY**, the ETF tracking the S&P 500.
 
-![Growth of $100 from June 2008 to September 2026 for the regime allocation, buy-and-hold SPY, and a fixed 62.5% SPY allocation](docs/figures/spy-backtest.png)
+![Growth of $100 in three SPY portfolios, June 2008–September 2026, with blue, gold, and rose bands for quiet, active, and stressed markets](docs/figures/spy-backtest.png)
+
+Blue, gold, and rose bands mark the model’s **quiet**, **active**, and **stressed**
+classifications at each daily close. For example,
+the HMM switched from active to stressed on 28 February 2020 and back to active
+on 1 July.
 
 **The regime allocation gave up some growth for a shallower drawdown.**
 An initial \$100 grew to **\$746** with the model and

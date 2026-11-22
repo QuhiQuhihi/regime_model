@@ -1,4 +1,4 @@
-"""Render the README figures from the published backtest and regime summaries."""
+"""Render the README figures from portfolio summaries and filtered HMM states."""
 
 import json
 import math
@@ -7,23 +7,34 @@ import matplotlib.dates as mdates
 import pandas as pd
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 from matplotlib.ticker import NullLocator, PercentFormatter, StrMethodFormatter
 
+from research.landing_backtest import load_archived_states
 from research.practical_config import RESULTS, ROOT
 
 
-def write_spy_wealth():
+def write_spy_wealth(daily_labels):
     folder = ROOT / "docs/figures"
     wealth = pd.read_csv(folder / "spy-wealth.csv", index_col="date", parse_dates=["date"])
     performance = pd.read_csv(folder / "spy-performance.csv", index_col="strategy")
     first, last = wealth.index[[0, -1]]
+    if (
+        daily_labels.empty
+        or daily_labels.index.has_duplicates
+        or not daily_labels.index.is_monotonic_increasing
+        or (daily_labels.index[0], daily_labels.index[-1]) != (first, last)
+        or not daily_labels.isin([0, 1, 2]).all()
+    ):
+        raise ValueError("Expected ordered, filtered HMM labels covering the wealth chart")
+    regimes = [("Quiet", "#e0eff5"), ("Active", "#fae7ae"), ("Stressed", "#debcd0")]
     styles = [
         ("regime", "HMM allocation", "#006b70", "-"),
         ("spy", "Buy and hold SPY", "#a24716", "--"),
         ("static", "Fixed 62.5% SPY", "#66607e", ":"),
     ]
     paper, ink, muted = "#f7f8f4", "#172f35", "#425c60"
-    fig = Figure(figsize=(10.8, 5.5), facecolor=paper)
+    fig = Figure(figsize=(10.8, 5.9), facecolor=paper)
     fig.text(
         0.055, 0.90, "A regime-based allocation to the S&P 500", size=23, weight="bold", color=ink
     )
@@ -34,7 +45,23 @@ def write_spy_wealth():
         fontsize=12,
         color=muted,
     )
-    ax = fig.add_axes([0.085, 0.265, 0.86, 0.51], facecolor=paper)
+    ax = fig.add_axes([0.085, 0.24, 0.86, 0.48], facecolor=paper)
+    changes = daily_labels[daily_labels.ne(daily_labels.shift())]
+    ends = [*changes.index[1:], last]
+    for (start, label), end in zip(changes.items(), ends, strict=True):
+        ax.axvspan(start, end, color=regimes[int(label)][1], linewidth=0, zorder=0)
+    ax.text(0, 1.025, "Daily HMM regime", transform=ax.transAxes, color=ink, size=11, va="bottom")
+    ax.legend(
+        handles=[Patch(facecolor=color, label=name) for name, color in regimes],
+        loc="lower left",
+        bbox_to_anchor=(0.16, 1.01),
+        borderaxespad=0,
+        frameon=False,
+        ncols=3,
+        handlelength=1.3,
+        columnspacing=1.4,
+        fontsize=11,
+    )
     ax.set_yscale("log")
     low, high = wealth.min().min() * 0.90, wealth.max().max() * 1.10
     ticks = range(math.ceil(math.log2(low / 100)), math.floor(math.log2(high / 100)) + 1)
@@ -49,7 +76,7 @@ def write_spy_wealth():
     ax.spines[:].set_visible(False)
     ax.tick_params(length=0, labelsize=10, pad=6, colors=muted)
     ax.set_axisbelow(True)
-    ax.yaxis.grid(True, color="#cdd6d2", linewidth=0.7)
+    ax.yaxis.grid(True, color="white", linewidth=0.8)
     for i, (key, label, color, linestyle) in enumerate(styles):
         values = wealth[key]
         ax.plot(values, color=color, linestyle=linestyle, lw=2.1 if key == "regime" else 1.8)
@@ -146,5 +173,5 @@ def write_stress_history():
 
 
 if __name__ == "__main__":
-    write_spy_wealth()
+    write_spy_wealth(load_archived_states()["label"])
     write_stress_history()

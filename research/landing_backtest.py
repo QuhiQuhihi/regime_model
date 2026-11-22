@@ -62,18 +62,12 @@ def write_landing_backtest(prices, stressed):
     summary.to_csv(output / "spy-performance.csv", float_format="%.8f")
 
 
-def replay_archived_backtest():
-    manifest = json.loads(MANIFEST.read_text())
-    entry = next(s for s in manifest["snapshots"] if s["ticker"] == "SPY")
-    price_path = ROOT / "research/data/raw" / entry["filename"]
+def load_archived_states():
     state_path = PATHS / "primary_states.csv"
     metadata = json.loads((RESULTS / "run_metadata.json").read_text())
     expected_state = metadata["private_outputs"][state_path.relative_to(ROOT).as_posix()]
-    if sha(price_path) != entry["sha256"] or sha(state_path) != expected_state:
-        raise ValueError("SPY prices or filtered states differ from the recorded study inputs")
-
-    prices = pd.read_csv(price_path, index_col="Date", parse_dates=True)
-    validate_prices(prices)
+    if sha(state_path) != expected_state:
+        raise ValueError("Filtered states differ from the recorded study inputs")
     states = pd.read_csv(state_path, index_col="date", parse_dates=True)
     diagnostics = json.loads((RESULTS / "diagnostics.json").read_text())
     if (states.index[0], states.index[-1]) != (
@@ -81,6 +75,18 @@ def replay_archived_backtest():
         pd.Timestamp(diagnostics["last_decision"]),
     ):
         raise ValueError("Filtered states differ from the published decision window")
+    return states
+
+
+def replay_archived_backtest():
+    manifest = json.loads(MANIFEST.read_text())
+    entry = next(s for s in manifest["snapshots"] if s["ticker"] == "SPY")
+    price_path = ROOT / "research/data/raw" / entry["filename"]
+    if sha(price_path) != entry["sha256"]:
+        raise ValueError("SPY prices differ from the recorded study inputs")
+    prices = pd.read_csv(price_path, index_col="Date", parse_dates=True)
+    validate_prices(prices)
+    states = load_archived_states()
     write_landing_backtest(prices.SPY, states.p_high)
 
 
