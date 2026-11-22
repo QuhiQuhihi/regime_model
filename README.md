@@ -1,20 +1,26 @@
-# Detecting market regimes with a hidden Markov model
+# Market regimes and the S&P 500
 
-At each market close, a three-state Gaussian hidden Markov model (HMM) uses returns
-from eight ETFs to estimate the probability of a **quiet, active, or stressed** market. Can those
-probabilities tell a researcher when to recalibrate risk?
+What happened to a stock portfolio that cut its exposure when markets looked stressed? This 18-year
+backtest uses a three-state hidden Markov model (HMM) across eight ETFs to size a
+position in **SPY**, the ETF tracking the S&P 500.
 
-Feeding the model risk levels and stock–bond dependence cut the share of sessions
-with a label change from **55.3%** with daily returns to
-**3.2%**. The steadier signal triggered
-**26 reviews**. Resetting risk estimates at those
-reviews had little effect on average forecast loss.
+![Growth of $100 from June 2008 to September 2026 for the regime allocation, buy-and-hold SPY, and a fixed 62.5% SPY allocation](docs/figures/spy-backtest.png)
 
-![Monthly average of the model's daily stressed-state probability from June 2008 through September 2026](docs/figures/stress-history.png)
+**The regime allocation gave up some growth for a shallower drawdown.**
+An initial \$100 grew to **\$746** with the model and
+**\$784** with buy-and-hold SPY. The largest peak-to-trough
+loss, measured at daily closes, was **19.2%** for the model
+and **50.7%** for buy-and-hold.
 
-In February 2020 the model assigned about 5% probability to stress on average.
-In March that average rose to nearly 100%. The chart summarizes daily estimates
-available at each close. [Monthly data](research/results/practical/monthly_monitor.csv) · [Daily replay examples](docs/03-historical-replays.md)
+**What was traded.** Each close's filtered stress probability $p_t$ sets a target
+SPY weight of $1-0.75p_t$, ranging from 25% to 100%. Trade at the following close
+and earn the new position's return from then on. All three portfolios start in cash,
+use adjusted SPY prices, earn 0% on cash, and pay 5 basis points per dollar traded,
+including entry. The fixed mix rebalances to 62.5% SPY daily. Curves show month-end
+wealth plus the final session. [Monthly wealth](docs/figures/spy-wealth.csv) · [Daily-based performance summary](docs/figures/spy-performance.csv)
+
+This historical simulation applies the earlier allocation rule to a model developed
+on the same history. Its portfolio results are exploratory. [Allocation rule](research/protocol_versions/forecast_20260919.md) · [Backtest code](research/landing_backtest.py)
 
 ## How the model assigns a regime
 
@@ -45,7 +51,11 @@ The Gaussian density measures how well today's features fit state $j$.
 Normalize across the three states and use the most probable one as the day's label.
 [Feature construction and replay code](research/feature_regimes.py)
 
-**3. Turn a stress signal into a review.** Two consecutive closes above 70% stressed
+Across the full replay, the feature model switched labels on
+**3.2%** of sessions versus **55.3%**
+for the daily-return HMM. [Stress probability over time](docs/figures/stress-history.png) · [Daily replay examples](docs/03-historical-replays.md)
+
+**3. Test a separate risk-calibration rule.** Two consecutive closes above 70% stressed
 probability trigger a reset to the mean of the latest 20 daily return outer products.
 For the next 21 updates, use fast EWMA (0.90), then resume slow EWMA (0.97).
 Another alert requires the signal to first fall to 70% or below and at least 21
@@ -53,7 +63,7 @@ sessions to pass since the previous alert. [Alert and calibration code](research
 
 ## Did the reset improve the next five sessions' risk estimate?
 
-Across **4,600 matched forecast dates**, the reset changed mean loss by
+The model triggered **26 resets**. Across **4,600 matched forecast dates**, the reset changed mean loss by
 **-0.0005** versus continuous slow EWMA. Its 95% interval
 **[-0.0249, +0.0167]** spans zero. The data are consistent
 with either a modest improvement or a modest deterioration in calibration.

@@ -1,13 +1,90 @@
-"""Draw the README history from the published monthly filtered probabilities."""
+"""Render the README figures from the published backtest and regime summaries."""
 
 import json
+import math
 
 import matplotlib.dates as mdates
 import pandas as pd
 from matplotlib.figure import Figure
-from matplotlib.ticker import PercentFormatter
+from matplotlib.lines import Line2D
+from matplotlib.ticker import NullLocator, PercentFormatter, StrMethodFormatter
 
 from research.practical_config import RESULTS, ROOT
+
+
+def write_spy_wealth():
+    folder = ROOT / "docs/figures"
+    wealth = pd.read_csv(folder / "spy-wealth.csv", index_col="date", parse_dates=["date"])
+    performance = pd.read_csv(folder / "spy-performance.csv", index_col="strategy")
+    first, last = wealth.index[[0, -1]]
+    styles = [
+        ("regime", "HMM allocation", "#006b70", "-"),
+        ("spy", "Buy and hold SPY", "#a24716", "--"),
+        ("static", "Fixed 62.5% SPY", "#66607e", ":"),
+    ]
+    paper, ink, muted = "#f7f8f4", "#172f35", "#425c60"
+    fig = Figure(figsize=(10.8, 5.5), facecolor=paper)
+    fig.text(
+        0.055, 0.90, "A regime-based allocation to the S&P 500", size=23, weight="bold", color=ink
+    )
+    fig.text(
+        0.055,
+        0.835,
+        f"Growth of $100 after simulated trading costs  ·  {first:%b %Y} – {last:%d %b %Y}",
+        fontsize=12,
+        color=muted,
+    )
+    ax = fig.add_axes([0.085, 0.265, 0.86, 0.51], facecolor=paper)
+    ax.set_yscale("log")
+    low, high = wealth.min().min() * 0.90, wealth.max().max() * 1.10
+    ticks = range(math.ceil(math.log2(low / 100)), math.floor(math.log2(high / 100)) + 1)
+    ax.set_yticks([100 * 2.0**power for power in ticks])
+    ax.yaxis.set_major_formatter(StrMethodFormatter("${x:,.0f}"))
+    ax.yaxis.set_minor_locator(NullLocator())
+    ax.set_ylim(low, high)
+    ax.set_xlim(first, last)
+    years = pd.date_range(first, last, freq="YS")
+    ax.set_xticks([first, *years[(years.year > first.year) & (years.year % 2 == 0)]])
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+    ax.spines[:].set_visible(False)
+    ax.tick_params(length=0, labelsize=10, pad=6, colors=muted)
+    ax.set_axisbelow(True)
+    ax.yaxis.grid(True, color="#cdd6d2", linewidth=0.7)
+    for i, (key, label, color, linestyle) in enumerate(styles):
+        values = wealth[key]
+        ax.plot(values, color=color, linestyle=linestyle, lw=2.1 if key == "regime" else 1.8)
+        ax.plot(last, values.iloc[-1], marker="o", color=color, markersize=4.5, clip_on=False)
+        x = 0.055 + i * 0.303
+        fig.add_artist(
+            Line2D(
+                [x, x + 0.027],
+                [0.127, 0.127],
+                transform=fig.transFigure,
+                color=color,
+                linestyle=linestyle,
+                lw=2.2,
+            )
+        )
+        fig.text(x + 0.036, 0.127, label, va="center", weight="bold", fontsize=12, color=ink)
+        row = performance.loc[key]
+        fig.text(
+            x,
+            0.062,
+            f"${row.terminal_wealth:,.0f} final  ·  {row.max_drawdown:.1%} max drawdown",
+            fontsize=10.5,
+            color=muted,
+        )
+    ax.text(
+        1,
+        1.025,
+        "Month-end wealth  ·  log scale",
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
+        color=muted,
+        size=9,
+    )
+    fig.savefig(folder / "spy-backtest.png", dpi=160, facecolor=paper)
 
 
 def write_stress_history():
@@ -69,4 +146,5 @@ def write_stress_history():
 
 
 if __name__ == "__main__":
+    write_spy_wealth()
     write_stress_history()

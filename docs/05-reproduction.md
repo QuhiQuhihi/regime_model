@@ -27,6 +27,30 @@ change. Public summaries and figures are under `research/results/practical/` and
 The notebook is saved only after fresh-kernel execution, alongside a local HTML preview
 in `research/preview/study.html`.
 
+## Reproduce the S&P 500 portfolio chart
+
+The study runner also applies the portfolio rule to its daily filtered states. To
+replay just that calculation from a matching local archive, run the two commands
+below. The first verifies the pinned SPY prices and daily state file against the
+study manifests, then writes the two summary CSVs in `docs/figures/`. The second
+redraws the README charts from the public summaries and also works in a fresh checkout.
+
+```bash
+uv run python -m research.landing_backtest
+uv run python -m research.landing_figure
+```
+
+All three portfolios begin with $100 in cash at the first signal close on 2 June
+2008. Their first trades occur at the 3 June close and first earn the return to the
+4 June close. Entry and subsequent trades cost 5 basis points per dollar traded.
+Cash earns zero interest and terminal wealth is marked at the last close.
+The wealth CSV retains the starting balance, the last observed close of each month,
+and the partial final month through 21 September 2026. The performance CSV uses all
+4,604 daily returns. CAGR compounds at 252 sessions per year and maximum drawdown
+uses the running peak of daily wealth including the starting balance.
+
+## Earlier SPY forecast study
+
 The previous SPY forecast study remains in the Git revision
 `4c0164ea5a114d865b45bd4b48f40ce72954a7c4`. Original source/result artifacts at the top
 level of `research/results/` and `research/figures/` are retained as that dated baseline;
